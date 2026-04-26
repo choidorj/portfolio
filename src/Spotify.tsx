@@ -69,59 +69,52 @@ function useFetch<T>(url: string, refreshMs?: number): FetchState<T> {
 function NowPlayingCard() {
   const { data, loading } = useFetch<NowPlaying>('/api/spotify/now-playing', 30_000)
 
-  if (loading) {
-    return (
-      <div className="now-playing now-playing--skeleton">
-        <div className="now-playing-cover skeleton" />
-        <div className="now-playing-meta">
-          <div className="skeleton skeleton-line skeleton-line--sm" />
-          <div className="skeleton skeleton-line skeleton-line--lg" />
-          <div className="skeleton skeleton-line skeleton-line--md" />
-        </div>
-      </div>
-    )
-  }
-
-  if (!data || !data.isPlaying) {
-    return (
-      <div className="now-playing now-playing--idle">
-        <div className="now-playing-meta">
-          <span className="now-playing-tag">Not currently listening</span>
-          <p className="now-playing-idle-text">Check back later.</p>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <a
-      className="now-playing"
-      href={data.songUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {data.albumImageUrl ? (
-        <img className="now-playing-cover" src={data.albumImageUrl} alt={data.album} />
+    <section className="spotify-section">
+      <h2>Now Playing</h2>
+      {loading ? (
+        <div className="now-playing now-playing--skeleton">
+          <div className="now-playing-cover skeleton" />
+          <div className="now-playing-meta">
+            <div className="skeleton skeleton-line skeleton-line--lg" />
+            <div className="skeleton skeleton-line skeleton-line--md" />
+          </div>
+        </div>
+      ) : !data || !data.isPlaying ? (
+        <div className="now-playing now-playing--idle">
+          <div className="now-playing-meta">
+            <span className="now-playing-title">Not currently listening</span>
+            <span className="now-playing-artist">Check back later.</span>
+          </div>
+        </div>
       ) : (
-        <div className="now-playing-cover" />
-      )}
-      <div className="now-playing-meta">
-        <span className="now-playing-tag">
+        <a
+          className="now-playing"
+          href={data.songUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {data.albumImageUrl ? (
+            <img className="now-playing-cover" src={data.albumImageUrl} alt={data.album} />
+          ) : (
+            <div className="now-playing-cover" />
+          )}
+          <div className="now-playing-meta">
+            <span className="now-playing-title">{data.title}</span>
+            <span className="now-playing-artist">{data.artist}</span>
+          </div>
           <span className="equalizer" aria-hidden="true">
             <span /><span /><span />
           </span>
-          Now playing
-        </span>
-        <span className="now-playing-title">{data.title}</span>
-        <span className="now-playing-artist">{data.artist}</span>
-      </div>
-    </a>
+        </a>
+      )}
+    </section>
   )
 }
 
 function TopArtists() {
   const { data, loading, error } = useFetch<{ items: Artist[] }>(
-    '/api/spotify/top-artists?limit=6',
+    '/api/spotify/top-artists?limit=8',
   )
 
   return (
@@ -131,7 +124,7 @@ function TopArtists() {
         <ErrorPlaceholder message={error} />
       ) : loading ? (
         <div className="spotify-grid">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="artist-card artist-card--skeleton">
               <div className="artist-img skeleton" />
               <div className="skeleton skeleton-line skeleton-line--md" />
