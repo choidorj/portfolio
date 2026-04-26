@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import './App.css'
+import Spotify from './Spotify'
 
 type Theme = 'light' | 'dark'
 
-const navItems = [
+const externalLinks = [
   {
     label: 'LinkedIn',
     href: 'https://www.linkedin.com/in/choidorjbayarkhuu/',
@@ -23,19 +25,6 @@ const navItems = [
     ),
   },
   {
-    label: 'Resume',
-    href: '#resume',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-        <polyline points="10 9 9 9 8 9" />
-      </svg>
-    ),
-  },
-  {
     label: 'Email',
     href: 'mailto:chdrj@g.ucla.edu',
     icon: (
@@ -47,30 +36,64 @@ const navItems = [
   },
 ]
 
-function App() {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('theme') as Theme | null
-    if (saved) return saved
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  })
+const spotifyIcon = (
+  <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+  </svg>
+)
 
+function AuroraBackground() {
+  return (
+    <div className="aurora" aria-hidden="true">
+      <div className="aurora-blob aurora-blob--one" />
+      <div className="aurora-blob aurora-blob--two" />
+      <div className="aurora-blob aurora-blob--three" />
+      <div className="aurora-blob aurora-blob--four" />
+      <div className="aurora-grain" />
+    </div>
+  )
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('theme', theme)
-  }, [theme])
+    window.scrollTo(0, 0)
+  }, [pathname])
+  return null
+}
 
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'))
-  }
+function HomePage() {
+  return (
+    <section id="hero" className="hero-section">
+      <div className="hero-content">
+        <h1 className="hero-name">Choidorj Bayarkhuu</h1>
+        <p className="hero-bio">
+          Undergraduate student at UCLA studying Computer Science.
+        </p>
+      </div>
+    </section>
+  )
+}
 
+function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: () => void }) {
   return (
     <>
       <nav className="navbar">
         <div className="nav-content">
-          <a href="#" className="nav-logo">Choi</a>
+          <Link to="/" className="nav-logo">Choi</Link>
           <div className="nav-icons">
-            {navItems.map((item) => (
-              <a key={item.label} href={item.href} className="nav-icon-link">
+            <Link to="/spotify" className="nav-icon-link">
+              {spotifyIcon}
+              <span className="nav-tooltip">Spotify</span>
+            </Link>
+            {externalLinks.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="nav-icon-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {item.icon}
                 <span className="nav-tooltip">{item.label}</span>
               </a>
@@ -104,17 +127,37 @@ function App() {
       </nav>
 
       <main>
-        <section id="hero" className="hero-section">
-          <h1 className="hero-name">Choidorj Bayarkhuu</h1>
-          <p className="hero-bio">
-            I am an undergraduate student at UCLA studying Computer Science. 
-            Passionate about building elegant solutions to
-            complex problems. 
-          </p>
-        </section>
-
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/spotify" element={<Spotify />} />
+        </Routes>
       </main>
     </>
+  )
+}
+
+function App() {
+  const [theme, setTheme] = useState<Theme>(() => {
+    const saved = localStorage.getItem('theme') as Theme | null
+    if (saved) return saved
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  })
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'))
+  }
+
+  return (
+    <BrowserRouter>
+      <AuroraBackground />
+      <ScrollToTop />
+      <Layout theme={theme} toggleTheme={toggleTheme} />
+    </BrowserRouter>
   )
 }
 
