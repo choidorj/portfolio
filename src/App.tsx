@@ -47,10 +47,47 @@ const spotifyIcon = (
 function AuroraBackground() {
   return (
     <div className="aurora" aria-hidden="true">
-      <div className="aurora-blob aurora-blob--one" />
-      <div className="aurora-blob aurora-blob--two" />
-      <div className="aurora-blob aurora-blob--three" />
-      <div className="aurora-blob aurora-blob--four" />
+      <svg
+        className="aurora-ribbon aurora-ribbon--a"
+        viewBox="0 0 1200 800"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="aurora-grad-a" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style={{ stopColor: 'var(--aurora-1)' }} />
+            <stop offset="35%" style={{ stopColor: 'var(--aurora-2)' }} />
+            <stop offset="70%" style={{ stopColor: 'var(--aurora-4)' }} />
+            <stop offset="100%" style={{ stopColor: 'var(--aurora-3)' }} />
+          </linearGradient>
+        </defs>
+        <path
+          d="M -200 420 C 100 180, 400 660, 700 380 S 1100 540, 1500 280"
+          stroke="url(#aurora-grad-a)"
+          strokeWidth="220"
+          strokeLinecap="round"
+          fill="none"
+        />
+      </svg>
+      <svg
+        className="aurora-ribbon aurora-ribbon--b"
+        viewBox="0 0 1200 800"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="aurora-grad-b" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" style={{ stopColor: 'var(--aurora-3)' }} />
+            <stop offset="50%" style={{ stopColor: 'var(--aurora-4)' }} />
+            <stop offset="100%" style={{ stopColor: 'var(--aurora-1)' }} />
+          </linearGradient>
+        </defs>
+        <path
+          d="M -200 600 C 200 700, 500 200, 800 500 S 1100 300, 1500 620"
+          stroke="url(#aurora-grad-b)"
+          strokeWidth="180"
+          strokeLinecap="round"
+          fill="none"
+        />
+      </svg>
       <div className="aurora-grain" />
     </div>
   )
