@@ -66,7 +66,7 @@ function ScrollToTop() {
 
 function HomePage() {
   return (
-    <section id="hero" className="hero-section">
+    <section className="hero-section">
       <div className="hero-content">
         <h1 className="hero-name">Choidorj Bayarkhuu</h1>
         <p className="hero-bio">
