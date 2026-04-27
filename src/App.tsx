@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import type { MouseEvent } from 'react'
+import { flushSync } from 'react-dom'
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import './App.css'
 import Spotify from './Spotify'
@@ -75,7 +77,9 @@ function HomePage() {
   )
 }
 
-function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: () => void }) {
+type ToggleTheme = (event: MouseEvent<HTMLButtonElement>) => void
+
+function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme }) {
   return (
     <>
       <nav className="navbar">
@@ -148,8 +152,33 @@ function App() {
     localStorage.setItem('theme', theme)
   }, [theme])
 
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'))
+  const toggleTheme: ToggleTheme = (event) => {
+    const next: Theme = theme === 'light' ? 'dark' : 'light'
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const supportsViewTransition = typeof document !== 'undefined' && 'startViewTransition' in document
+
+    if (!supportsViewTransition || reduceMotion) {
+      setTheme(next)
+      return
+    }
+
+    const rect = event.currentTarget.getBoundingClientRect()
+    const x = rect.left + rect.width / 2
+    const y = rect.top + rect.height / 2
+    const maxRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y),
+    )
+
+    const root = document.documentElement
+    root.style.setProperty('--reveal-x', `${x}px`)
+    root.style.setProperty('--reveal-y', `${y}px`)
+    root.style.setProperty('--reveal-r', `${maxRadius}px`)
+
+    document.startViewTransition(() => {
+      flushSync(() => setTheme(next))
+    })
   }
 
   return (

@@ -175,7 +175,7 @@ main {
   width: 55vmax;
   height: 55vmax;
   background: radial-gradient(circle at center, var(--aurora-1), transparent 70%);
-  animation: aurora-drift-1 24s ease-in-out infinite alternate;
+  animation: aurora-drift-1 18s ease-in-out infinite alternate;
 }
 
 .aurora-blob--two {
@@ -184,7 +184,7 @@ main {
   width: 50vmax;
   height: 50vmax;
   background: radial-gradient(circle at center, var(--aurora-2), transparent 70%);
-  animation: aurora-drift-2 30s ease-in-out infinite alternate;
+  animation: aurora-drift-2 22s ease-in-out infinite alternate;
 }
 
 .aurora-blob--three {
@@ -193,7 +193,7 @@ main {
   width: 60vmax;
   height: 60vmax;
   background: radial-gradient(circle at center, var(--aurora-3), transparent 70%);
-  animation: aurora-drift-3 34s ease-in-out infinite alternate;
+  animation: aurora-drift-3 26s ease-in-out infinite alternate;
 }
 
 .aurora-blob--four {
@@ -202,7 +202,7 @@ main {
   width: 36vmax;
   height: 36vmax;
   background: radial-gradient(circle at center, var(--aurora-4), transparent 70%);
-  animation: aurora-drift-4 28s ease-in-out infinite alternate;
+  animation: aurora-drift-4 20s ease-in-out infinite alternate;
 }
 
 [data-theme="light"] .aurora-blob {
@@ -219,24 +219,32 @@ main {
   background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
 }
 
+/* Drift amplitudes are tuned so each blob's visible portion always stays
+   within the viewport — they're huge (36–60vmax) and anchored partially
+   off-screen, so even at peak translate they remain in frame. */
+
 @keyframes aurora-drift-1 {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(14vw, 10vh, 0) scale(1.15); }
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(10vw, 8vh, 0) scale(1.12); }
+  100% { transform: translate3d(4vw, 14vh, 0) scale(1.05); }
 }
 
 @keyframes aurora-drift-2 {
-  from { transform: translate3d(0, 0, 0) scale(1.05); }
-  to   { transform: translate3d(-12vw, 16vh, 0) scale(0.95); }
+  0%   { transform: translate3d(0, 0, 0) scale(1.05); }
+  50%  { transform: translate3d(-9vw, 12vh, 0) scale(0.95); }
+  100% { transform: translate3d(-12vw, 4vh, 0) scale(1.1); }
 }
 
 @keyframes aurora-drift-3 {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(10vw, -14vh, 0) scale(1.1); }
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(8vw, -10vh, 0) scale(1.08); }
+  100% { transform: translate3d(-3vw, -6vh, 0) scale(1.15); }
 }
 
 @keyframes aurora-drift-4 {
-  from { transform: translate3d(0, 0, 0) scale(0.9); }
-  to   { transform: translate3d(-16vw, -8vh, 0) scale(1.2); }
+  0%   { transform: translate3d(0, 0, 0) scale(0.95); }
+  50%  { transform: translate3d(-12vw, -6vh, 0) scale(1.15); }
+  100% { transform: translate3d(-6vw, 8vh, 0) scale(1.05); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -408,6 +416,7 @@ main {
 /* Now Playing card */
 
 .now-playing {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -418,6 +427,30 @@ main {
   text-decoration: none;
   color: inherit;
   transition: transform 0.2s, background 0.2s, border-color 0.2s;
+  overflow: hidden;
+}
+
+.now-playing-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+[data-theme="light"] .now-playing-progress {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.now-playing-progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  opacity: 0.7;
+  border-radius: 0 1px 1px 0;
+  will-change: width;
 }
 
 a.now-playing:hover {

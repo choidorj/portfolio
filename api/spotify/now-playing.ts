@@ -4,6 +4,7 @@ import { spotifyFetch, type NowPlaying, type SpotifyTrack } from '../_lib/spotif
 type CurrentlyPlayingResponse = {
   is_playing: boolean
   item: SpotifyTrack | null
+  progress_ms: number | null
 }
 
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
@@ -19,6 +20,9 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
         album: data.item.album.name,
         albumImageUrl: data.item.album.images[0]?.url ?? null,
         songUrl: data.item.external_urls.spotify,
+        progressMs: data.progress_ms ?? 0,
+        durationMs: data.item.duration_ms,
+        fetchedAt: Date.now(),
       }
     }
 

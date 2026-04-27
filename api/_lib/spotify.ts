@@ -89,6 +89,9 @@ export type NowPlaying = {
   album: string
   albumImageUrl: string | null
   songUrl: string
+  progressMs: number
+  durationMs: number
+  fetchedAt: number
 } | null
 
 export type CardResponse<T> = { items: T[] }

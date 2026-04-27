@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type NowPlaying = {
   isPlaying: boolean
@@ -7,6 +7,9 @@ type NowPlaying = {
   album: string
   albumImageUrl: string | null
   songUrl: string
+  progressMs: number
+  durationMs: number
+  fetchedAt: number
 } | null
 
 type Track = {
@@ -68,6 +71,24 @@ function useFetch<T>(url: string, refreshMs?: number): FetchState<T> {
 
 function NowPlayingCard() {
   const { data, loading } = useFetch<NowPlaying>('/api/spotify/now-playing', 30_000)
+  const fillRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const fill = fillRef.current
+    if (!fill || !data || !data.isPlaying || data.durationMs <= 0) return
+
+    let raf = 0
+    const tick = () => {
+      const elapsed = Date.now() - data.fetchedAt
+      const progress = Math.min(Math.max(data.progressMs + elapsed, 0), data.durationMs)
+      fill.style.width = `${(progress / data.durationMs) * 100}%`
+      if (progress < data.durationMs) {
+        raf = requestAnimationFrame(tick)
+      }
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [data])
 
   return (
     <section className="spotify-section">
@@ -83,8 +104,8 @@ function NowPlayingCard() {
       ) : !data || !data.isPlaying ? (
         <div className="now-playing now-playing--idle">
           <div className="now-playing-meta">
-            <span className="now-playing-title">Not currently listening</span>
-            <span className="now-playing-artist">Check back later.</span>
+            <span className="now-playing-title">Not currently listening to anything.</span>
+            <span className="now-playing-artist">Please check back later :)</span>
           </div>
         </div>
       ) : (
@@ -106,6 +127,11 @@ function NowPlayingCard() {
           <span className="equalizer" aria-hidden="true">
             <span /><span /><span />
           </span>
+          {data.durationMs > 0 && (
+            <div className="now-playing-progress" aria-hidden="true">
+              <div ref={fillRef} className="now-playing-progress-fill" />
+            </div>
+          )}
         </a>
       )}
     </section>
