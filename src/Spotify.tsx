@@ -104,7 +104,7 @@ function NowPlayingCard() {
       ) : !data || !data.isPlaying ? (
         <div className="now-playing now-playing--idle">
           <div className="now-playing-meta">
-            <span className="now-playing-title">Not currently listening to anything.</span>
+            <span className="now-playing-title">Not currently listening.</span>
             <span className="now-playing-artist">Please check back later :)</span>
           </div>
         </div>
