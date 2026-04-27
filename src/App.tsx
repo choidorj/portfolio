@@ -3,6 +3,7 @@ import type { MouseEvent } from 'react'
 import { flushSync } from 'react-dom'
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import './App.css'
 import Spotify from './Spotify'
 
@@ -225,6 +226,7 @@ function App() {
       <ScrollToTop />
       <Layout theme={theme} toggleTheme={toggleTheme} />
       <Analytics />
+      <SpeedInsights />
     </BrowserRouter>
   )
 }
