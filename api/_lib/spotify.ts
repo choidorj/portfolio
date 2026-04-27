@@ -93,5 +93,3 @@ export type NowPlaying = {
   durationMs: number
   fetchedAt: number
 } | null
-
-export type CardResponse<T> = { items: T[] }

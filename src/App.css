@@ -114,15 +114,6 @@ main {
   animation: hero-fade-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-.hero-eyebrow {
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--accent);
-  opacity: 0.85;
-}
-
 .hero-name {
   font-size: clamp(40px, 8vw, 76px);
   font-weight: 700;
@@ -403,11 +394,6 @@ main {
   border-radius: 12px;
 }
 
-.spotify-placeholder svg {
-  margin-bottom: 16px;
-  opacity: 0.5;
-}
-
 .spotify-placeholder p {
   font-size: 14px;
   line-height: 1.6;
@@ -576,11 +562,6 @@ a.now-playing:hover {
 
   .hero-content {
     gap: 14px;
-  }
-
-  .hero-eyebrow {
-    font-size: 11px;
-    letter-spacing: 3px;
   }
 
   .spotify-grid {
