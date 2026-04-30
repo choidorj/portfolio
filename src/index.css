@@ -1,5 +1,3 @@
-@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap');
-
 :root {
   --nav-bg: #01050D;
   --bg-deep: #050B16;
@@ -22,7 +20,7 @@
 
   /* Aurora ribbon speed. Lower = faster, higher = slower.
      Ribbon B animates at 1.4× this duration for asynchronous flow. */
-  --aurora-speed: 22s;
+  --aurora-speed: 15s;
 
   --font: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 

@@ -11,6 +11,26 @@
     <meta name="apple-mobile-web-app-title" content="Choi" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Choidorj Bayarkhuu</title>
+
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap"
+    />
+
+    <script>
+      // Resolve theme before React paints to avoid a flash of wrong colors.
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var theme =
+            saved ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

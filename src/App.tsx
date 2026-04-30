@@ -125,7 +125,7 @@ function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme
         <div className="nav-content">
           <Link to="/" className="nav-logo">Choi</Link>
           <div className="nav-icons">
-            <Link to="/spotify" className="nav-icon-link">
+            <Link to="/spotify" className="nav-icon-link" aria-label="Spotify">
               {spotifyIcon}
               <span className="nav-tooltip">Spotify</span>
             </Link>
@@ -136,6 +136,7 @@ function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme
                 className="nav-icon-link"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={item.label}
               >
                 {item.icon}
                 <span className="nav-tooltip">{item.label}</span>
@@ -163,7 +164,7 @@ function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme
                   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                 </svg>
               )}
-              <span className="nav-tooltip">Dark Mode</span>
+              <span className="nav-tooltip">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
             </button>
           </div>
         </div>
