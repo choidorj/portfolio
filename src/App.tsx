@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import type { MouseEvent } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
@@ -98,34 +98,144 @@ function AuroraBackground() {
 function ScrollToTop() {
   const { pathname } = useLocation()
   useEffect(() => {
-    window.scrollTo(0, 0)
+    // 'instant' overrides the global scroll-behavior: smooth so route
+    // changes don't animate from the previous scroll position.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [pathname])
   return null
 }
 
-function HomePage() {
+function RevealOnScroll({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  // Initialize visible=true when the user prefers reduced motion so the
+  // effect never has to call setState synchronously to skip the reveal.
+  const [visible, setVisible] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+
+  useEffect(() => {
+    if (visible) return
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.15 },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [visible])
+
+  return (
+    <div
+      ref={ref}
+      className={`reveal${visible ? ' is-visible' : ''}`}
+      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+    >
+      {children}
+    </div>
+  )
+}
+
+function Hero() {
   return (
     <section className="hero-section">
       <div className="hero-content">
+        <span className="hero-eyebrow">STUDENT &middot; UCLA &middot; CS</span>
         <h1 className="hero-name">Choidorj Bayarkhuu</h1>
         <p className="hero-bio">
           Undergraduate student at UCLA studying Computer Science.
         </p>
+        <div className="hero-ctas">
+          <a href="#about" className="hero-cta hero-cta--primary">About</a>
+          <Link to="/spotify" className="hero-cta">Spotify</Link>
+        </div>
       </div>
+      <a href="#about" className="hero-scroll-cue" aria-label="Scroll to about">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </a>
     </section>
+  )
+}
+
+function AboutSection() {
+  return (
+    <section id="about" className="about-section">
+      <RevealOnScroll>
+        <span className="section-label">About</span>
+      </RevealOnScroll>
+      <RevealOnScroll delay={80}>
+        <p className="about-body">
+          A CS student at UCLA who likes building things that feel good to use. Outside of class,
+          I'm usually listening to music or out finding a new spot somewhere in LA.
+        </p>
+      </RevealOnScroll>
+      <RevealOnScroll delay={160}>
+        <p className="about-quote">Always trying to learn something new.</p>
+      </RevealOnScroll>
+    </section>
+  )
+}
+
+function HomePage() {
+  return (
+    <>
+      <Hero />
+      <AboutSection />
+    </>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="footer-inner">
+        <span className="footer-signature">— Choi, {new Date().getFullYear()}</span>
+        <div className="footer-gradient-line" aria-hidden="true" />
+        <div className="footer-icons">
+          {externalLinks.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="footer-icon"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={item.label}
+            >
+              {item.icon}
+            </a>
+          ))}
+        </div>
+      </div>
+    </footer>
   )
 }
 
 type ToggleTheme = (event: MouseEvent<HTMLButtonElement>) => void
 
 function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme }) {
+  const { pathname } = useLocation()
+  const isSpotifyActive = pathname === '/spotify'
+
   return (
     <>
       <nav className="navbar">
         <div className="nav-content">
           <Link to="/" className="nav-logo">Choi</Link>
           <div className="nav-icons">
-            <Link to="/spotify" className="nav-icon-link" aria-label="Spotify">
+            <Link
+              to="/spotify"
+              className={`nav-icon-link${isSpotifyActive ? ' is-active' : ''}`}
+              aria-label="Spotify"
+            >
               {spotifyIcon}
               <span className="nav-tooltip">Spotify</span>
             </Link>
@@ -176,6 +286,8 @@ function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme
           <Route path="/spotify" element={<Spotify />} />
         </Routes>
       </main>
+
+      <Footer />
     </>
   )
 }

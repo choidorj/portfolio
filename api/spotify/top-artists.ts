@@ -15,7 +15,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const items = (data?.items ?? []).map((a) => ({
       id: a.id,
       name: a.name,
-      imageUrl: a.images?.[a.images.length - 1]?.url ?? null,
+      // Spotify typically returns [640, 300, 64]; pick the mid-size
+      // so 100×100 retina cards render sharply without bandwidth bloat.
+      imageUrl: a.images?.[1]?.url ?? a.images?.[0]?.url ?? null,
       genres: a.genres?.slice(0, 2) ?? [],
       url: a.external_urls.spotify,
     }))

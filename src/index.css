@@ -22,7 +22,22 @@
      Ribbon B animates at 1.4× this duration for asynchronous flow. */
   --aurora-speed: 15s;
 
+  /* Cinematic glass surfaces — small translucent cards layered above the aurora. */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-hover: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+  --accent-soft: rgba(107, 184, 238, 0.3);
+
+  /* Reused gradient for hero name, progress bars, accent moments. */
+  --gradient-text: linear-gradient(120deg, var(--accent), var(--aurora-2), var(--aurora-4));
+
+  /* Section labels: tiny tracked uppercase. */
+  --label-tracking: 0.18em;
+
   --font: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Sentient', Georgia, 'Times New Roman', serif;
 
   font: 16px/1.6 var(--font);
   color: var(--fg);
@@ -52,6 +67,14 @@
   --aurora-2: #F0B4C8;
   --aurora-3: #B6A5E6;
   --aurora-4: #8AD6D6;
+
+  /* Glass tokens flip to translucent white-ish on light backgrounds. */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-hover: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-highlight: rgba(255, 255, 255, 0.95);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  --accent-soft: rgba(28, 61, 89, 0.22);
 }
 
 * {
@@ -62,6 +85,13 @@
 
 html {
   background: var(--bg-deep);
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
