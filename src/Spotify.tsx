@@ -183,7 +183,7 @@ function TopArtists() {
 
 function TopTracks() {
   const { data, loading, error } = useFetch<{ items: Track[] }>(
-    '/api/spotify/top-tracks?limit=10',
+    '/api/spotify/top-tracks?limit=5',
   )
 
   return (
@@ -202,7 +202,7 @@ function TopTracks() {
 
 function RecentlyPlayed() {
   const { data, loading, error } = useFetch<{ items: Track[] }>(
-    '/api/spotify/recently-played?limit=10',
+    '/api/spotify/recently-played?limit=5',
   )
 
   return (
