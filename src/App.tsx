@@ -179,8 +179,8 @@ function HomePage() {
         <p className="hero-bio">
           I like building things that feel good to use.
         </p>
-        <NowPlaying />
       </div>
+      <NowPlaying />
     </section>
   )
 }

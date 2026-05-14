@@ -112,8 +112,6 @@ export default function NowPlaying() {
         )}
       </span>
       <span className="hero-now-playing-meta">
-        <span className="hero-now-playing-label">{label}</span>
-        <span className="hero-now-playing-sep" aria-hidden="true">·</span>
         <span className="hero-now-playing-track">{track.title}</span>
         <span className="hero-now-playing-dash" aria-hidden="true">—</span>
         <span className="hero-now-playing-artist">{track.artist}</span>
