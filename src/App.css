@@ -295,13 +295,14 @@ main {
   right: 24px;
   z-index: 5;
   display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 14px 6px 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 9px 18px 10px 14px;
   max-width: min(calc(100vw - 48px), 380px);
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  border-radius: 999px;
+  border-radius: 18px;
   box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
@@ -315,6 +316,23 @@ main {
     border-color 0.25s ease,
     transform 0.3s cubic-bezier(0.32, 0.72, 0, 1),
     color 0.25s ease;
+}
+
+.hero-now-playing-label {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  line-height: 1;
+}
+
+.hero-now-playing-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .hero-now-playing:hover {
@@ -951,8 +969,12 @@ a.now-playing:hover {
     bottom: 16px;
     right: 16px;
     max-width: calc(100vw - 32px);
-    padding: 5px 12px 5px 9px;
+    padding: 8px 14px 9px 12px;
     font-size: 12.5px;
+  }
+
+  .hero-now-playing-label {
+    font-size: 9px;
   }
 
   .spotify-grid {

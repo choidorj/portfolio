@@ -90,7 +90,7 @@ export default function NowPlaying() {
   if (!state) return null
 
   const { track, isLive } = state
-  const label = isLive ? 'Now playing' : 'Last played'
+  const label = isLive ? 'Now listening' : 'Was last listening to'
 
   return (
     <a
@@ -100,21 +100,24 @@ export default function NowPlaying() {
       rel="noopener noreferrer"
       aria-label={`${label}: ${track.title} by ${track.artist}. Listen on Spotify.`}
     >
-      <span className="hero-now-playing-icon" aria-hidden="true">
-        {isLive ? (
-          <span className="equalizer">
-            <span />
-            <span />
-            <span />
-          </span>
-        ) : (
-          <span className="hero-now-playing-dot" />
-        )}
-      </span>
-      <span className="hero-now-playing-meta">
-        <span className="hero-now-playing-track">{track.title}</span>
-        <span className="hero-now-playing-dash" aria-hidden="true">—</span>
-        <span className="hero-now-playing-artist">{track.artist}</span>
+      <span className="hero-now-playing-label">{label}</span>
+      <span className="hero-now-playing-row">
+        <span className="hero-now-playing-icon" aria-hidden="true">
+          {isLive ? (
+            <span className="equalizer">
+              <span />
+              <span />
+              <span />
+            </span>
+          ) : (
+            <span className="hero-now-playing-dot" />
+          )}
+        </span>
+        <span className="hero-now-playing-meta">
+          <span className="hero-now-playing-track">{track.title}</span>
+          <span className="hero-now-playing-dash" aria-hidden="true">—</span>
+          <span className="hero-now-playing-artist">{track.artist}</span>
+        </span>
       </span>
     </a>
   )
