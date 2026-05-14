@@ -117,34 +117,17 @@ a:hover {
   color: var(--accent-hover);
 }
 
-/* View Transitions: circular reveal for theme toggle.
-   Writes --reveal-x / --reveal-y / --reveal-r on <html> at click time. */
+/* View Transitions: subtle 0.5s cross-fade for theme toggle. */
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: none;
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
   mix-blend-mode: normal;
 }
 
-::view-transition-old(root) {
-  z-index: 0;
-}
-
-::view-transition-new(root) {
-  z-index: 1;
-  animation: theme-reveal 0.52s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-@keyframes theme-reveal {
-  from {
-    clip-path: circle(0 at var(--reveal-x, 50%) var(--reveal-y, 50%));
-  }
-  to {
-    clip-path: circle(var(--reveal-r, 150vmax) at var(--reveal-x, 50%) var(--reveal-y, 50%));
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none;
   }
