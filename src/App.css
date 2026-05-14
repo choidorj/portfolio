@@ -2,34 +2,95 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  background: transparent;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition:
+    background 0.35s ease,
+    backdrop-filter 0.35s ease,
+    -webkit-backdrop-filter 0.35s ease;
+  animation: navbar-reveal 0.7s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.navbar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--nav-border) 20%,
+    var(--nav-border) 80%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.navbar.is-scrolled {
   background: var(--nav-translucent);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border-bottom: 1px solid var(--nav-border);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+.navbar.is-scrolled::after {
+  opacity: 1;
+}
+
+@keyframes navbar-reveal {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .nav-content {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 24px;
-  height: 56px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .nav-logo {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
   font-family: var(--font);
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
   color: var(--fg-bright);
   text-decoration: none;
-  letter-spacing: -0.5px;
-  transition: color 0.2s;
+  letter-spacing: -0.02em;
+  transition: opacity 0.25s ease;
 }
 
 .nav-logo:hover {
-  color: var(--accent);
+  opacity: 0.78;
+}
+
+.nav-logo-text {
+  display: inline-block;
+}
+
+.nav-logo-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-image: var(--gradient-text);
+  margin-bottom: 3px;
+  transform: scale(0.92);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.nav-logo:hover .nav-logo-dot {
+  transform: scale(1.35);
 }
 
 .nav-icons {
@@ -37,29 +98,43 @@
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 2px;
 }
 
 .nav-icon-link {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 36px;
+  height: 36px;
   color: var(--fg-muted);
-  padding: 8px;
-  border-radius: 8px;
-  transition:
-    color 0.2s,
-    background 0.2s,
-    transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+  border-radius: 10px;
   cursor: pointer;
   text-decoration: none;
+  transition:
+    color 0.25s ease,
+    background 0.25s ease;
+}
+
+.nav-icon-link svg {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .nav-icon-link:hover {
   color: var(--fg-bright);
   background: var(--glass-bg-hover);
-  transform: translateY(-1px);
+}
+
+.nav-icon-link:hover svg {
+  transform: scale(1.08);
+}
+
+.nav-icon-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
 .nav-icon-link.is-active {
@@ -69,44 +144,71 @@
 .nav-icon-link.is-active::after {
   content: '';
   position: absolute;
-  left: 22%;
-  right: 22%;
-  bottom: 2px;
-  height: 1.5px;
+  left: 50%;
+  bottom: 4px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
   background-image: var(--gradient-text);
-  border-radius: 1px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 6px var(--accent-soft);
 }
 
 .nav-tooltip {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 6px);
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -4px);
   z-index: 101;
-  padding: 5px 10px;
+  padding: 4px 9px;
   background: var(--bg-light);
   color: var(--fg-bright);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 500;
   font-family: var(--font);
+  letter-spacing: 0.02em;
   border: 1px solid var(--glass-border);
   border-radius: 6px;
   box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s;
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-.nav-icon-link:hover .nav-tooltip {
+.nav-icon-link:hover .nav-tooltip,
+.nav-icon-link:focus-visible .nav-tooltip {
   opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .theme-toggle {
   background: none;
   border: none;
+  padding: 0;
   font-size: inherit;
   line-height: 1;
+}
+
+.theme-toggle:hover svg {
+  transform: scale(1.08) rotate(14deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar,
+  .nav-logo-dot,
+  .nav-icon-link svg,
+  .nav-tooltip {
+    animation: none;
+    transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease;
+  }
+  .nav-icon-link:hover svg,
+  .theme-toggle:hover svg,
+  .nav-logo:hover .nav-logo-dot {
+    transform: none;
+  }
 }
 
 main {
@@ -123,7 +225,7 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 60px);
   text-align: center;
   padding: 0 24px;
 }
@@ -159,8 +261,21 @@ main {
   font-size: clamp(44px, 8.5vw, 84px);
   font-weight: 700;
   letter-spacing: -0.035em;
-  color: var(--fg-bright);
   line-height: 1.02;
+  /* The radial spotlight follows the cursor via JS-updated --mx / --my.
+     At rest (off-canvas defaults), the gradient resolves to --fg-bright,
+     preserving the original solid look. */
+  background: radial-gradient(
+    320px circle at var(--mx, -9999px) var(--my, -9999px),
+    var(--accent) 0%,
+    var(--aurora-4) 25%,
+    var(--fg-bright) 55%
+  );
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  cursor: default;
 }
 
 .hero-bio {
@@ -168,6 +283,116 @@ main {
   font-size: clamp(15px, 1.6vw, 17px);
   line-height: 1.7;
   color: var(--fg-muted);
+}
+
+/* Now playing chip in the hero — pulls from /api/spotify */
+
+.hero-now-playing {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 6px 14px 6px 10px;
+  max-width: min(92vw, 420px);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  font-size: 13px;
+  color: var(--fg);
+  text-decoration: none;
+  /* Async-mount fade-in. Overrides the nth-child delay so it appears
+     immediately when the Spotify response arrives. */
+  animation: hero-fade-up 0.5s cubic-bezier(0.32, 0.72, 0, 1) 0s both;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.3s cubic-bezier(0.32, 0.72, 0, 1),
+    color 0.25s ease;
+}
+
+.hero-now-playing:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+.hero-now-playing:focus-visible {
+  outline: none;
+  border-color: var(--accent-soft);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.hero-now-playing.is-live {
+  border-color: var(--accent-soft);
+}
+
+.hero-now-playing-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.hero-now-playing-icon .equalizer {
+  height: 12px;
+  margin-left: 0;
+  gap: 2px;
+}
+
+.hero-now-playing-icon .equalizer span {
+  width: 2.5px;
+}
+
+.hero-now-playing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fg-muted);
+}
+
+.hero-now-playing-meta {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.hero-now-playing-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  flex-shrink: 0;
+}
+
+.hero-now-playing-sep,
+.hero-now-playing-dash {
+  color: var(--fg-muted);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.hero-now-playing-track {
+  color: var(--fg-bright);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.hero-now-playing-artist {
+  color: var(--fg-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 @keyframes hero-fade-up {
@@ -200,6 +425,33 @@ main {
   overflow: hidden;
   pointer-events: none;
   background: var(--bg-deep);
+}
+
+/* Outer parallax wrapper. Holds the cursor-reactive translation so it
+   composes cleanly with the ribbon's own keyframe animation below.
+   --mx / --my are 0..1 normalized cursor coords set from JS. */
+
+.aurora-parallax {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.aurora-parallax--a {
+  transform: translate3d(
+    calc((var(--mx, 0.5) - 0.5) * 28px),
+    calc((var(--my, 0.5) - 0.5) * 28px),
+    0
+  );
+}
+
+.aurora-parallax--b {
+  transform: translate3d(
+    calc((var(--mx, 0.5) - 0.5) * -44px),
+    calc((var(--my, 0.5) - 0.5) * -44px),
+    0
+  );
 }
 
 /* Two glowing gradient ribbons drift across the viewport. Speed is
@@ -267,7 +519,7 @@ main {
 /* Spotify page */
 
 .spotify-page {
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 60px);
   padding: 60px 24px 80px;
 }
 
@@ -580,17 +832,133 @@ a.now-playing:hover {
   }
 }
 
+/* 404 page */
+
+.notfound-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 60px);
+  text-align: center;
+  padding: 0 24px;
+}
+
+.notfound-content {
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.notfound-content > * {
+  opacity: 0;
+  animation: hero-fade-up 0.6s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.notfound-content > *:nth-child(1) { animation-delay: 0ms; }
+.notfound-content > *:nth-child(2) { animation-delay: 80ms; }
+.notfound-content > *:nth-child(3) { animation-delay: 160ms; }
+.notfound-content > *:nth-child(4) { animation-delay: 240ms; }
+
+.notfound-title {
+  font-size: clamp(28px, 5.5vw, 48px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--fg-bright);
+  line-height: 1.1;
+}
+
+.notfound-text {
+  font-size: 15px;
+  color: var(--fg-muted);
+  line-height: 1.65;
+  max-width: 420px;
+}
+
+.notfound-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px 10px 14px;
+  margin-top: 8px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg);
+  text-decoration: none;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.3s cubic-bezier(0.32, 0.72, 0, 1),
+    color 0.25s ease;
+}
+
+.notfound-cta:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--accent-soft);
+  transform: translateY(-1px);
+  color: var(--fg-bright);
+}
+
+.notfound-cta svg {
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.notfound-cta:hover svg {
+  transform: translateX(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notfound-content > *,
+  .hero-now-playing {
+    animation: none;
+    opacity: 1;
+  }
+  .notfound-cta:hover,
+  .notfound-cta:hover svg,
+  .hero-now-playing:hover {
+    transform: none;
+  }
+}
+
 @media (max-width: 640px) {
   .nav-content {
-    gap: 16px;
+    gap: 12px;
+    padding: 0 16px;
   }
 
   .nav-icons {
-    gap: 12px;
+    gap: 0;
+  }
+
+  .nav-icon-link {
+    width: 34px;
+    height: 34px;
+  }
+
+  .nav-icon-link svg {
+    width: 20px;
+    height: 20px;
   }
 
   .hero-content {
     gap: 14px;
+  }
+
+  .hero-now-playing {
+    max-width: 100%;
+  }
+
+  .hero-now-playing-label {
+    display: none;
   }
 
   .spotify-grid {

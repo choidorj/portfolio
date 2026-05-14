@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, type MouseEvent as ReactMouseEvent } from 'react'
 import { flushSync } from 'react-dom'
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import './App.css'
 import Spotify from './Spotify'
+import NotFound from './NotFound'
+import NowPlaying from './NowPlaying'
+import TransitionLink from './TransitionLink'
 
 type Theme = 'light' | 'dark'
 
@@ -46,49 +49,95 @@ const spotifyIcon = (
 )
 
 function AuroraBackground() {
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduceMotion) return
+
+    const el = rootRef.current
+    if (!el) return
+
+    let rafId = 0
+    let targetX = 0.5
+    let targetY = 0.5
+    let curX = 0.5
+    let curY = 0.5
+
+    const tick = () => {
+      // Critically-damped easing toward the cursor.
+      curX += (targetX - curX) * 0.06
+      curY += (targetY - curY) * 0.06
+      el.style.setProperty('--mx', curX.toFixed(4))
+      el.style.setProperty('--my', curY.toFixed(4))
+
+      if (Math.abs(targetX - curX) > 0.0008 || Math.abs(targetY - curY) > 0.0008) {
+        rafId = requestAnimationFrame(tick)
+      } else {
+        rafId = 0
+      }
+    }
+
+    const onMove = (e: PointerEvent) => {
+      targetX = e.clientX / window.innerWidth
+      targetY = e.clientY / window.innerHeight
+      if (!rafId) rafId = requestAnimationFrame(tick)
+    }
+
+    window.addEventListener('pointermove', onMove, { passive: true })
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
+  }, [])
+
   return (
-    <div className="aurora" aria-hidden="true">
-      <svg
-        className="aurora-ribbon aurora-ribbon--a"
-        viewBox="0 0 1200 800"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <linearGradient id="aurora-grad-a" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style={{ stopColor: 'var(--aurora-1)' }} />
-            <stop offset="35%" style={{ stopColor: 'var(--aurora-2)' }} />
-            <stop offset="70%" style={{ stopColor: 'var(--aurora-4)' }} />
-            <stop offset="100%" style={{ stopColor: 'var(--aurora-3)' }} />
-          </linearGradient>
-        </defs>
-        <path
-          d="M -200 420 C 100 180, 400 660, 700 380 S 1100 540, 1500 280"
-          stroke="url(#aurora-grad-a)"
-          strokeWidth="220"
-          strokeLinecap="round"
-          fill="none"
-        />
-      </svg>
-      <svg
-        className="aurora-ribbon aurora-ribbon--b"
-        viewBox="0 0 1200 800"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <linearGradient id="aurora-grad-b" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" style={{ stopColor: 'var(--aurora-3)' }} />
-            <stop offset="50%" style={{ stopColor: 'var(--aurora-4)' }} />
-            <stop offset="100%" style={{ stopColor: 'var(--aurora-1)' }} />
-          </linearGradient>
-        </defs>
-        <path
-          d="M -200 600 C 200 700, 500 200, 800 500 S 1100 300, 1500 620"
-          stroke="url(#aurora-grad-b)"
-          strokeWidth="180"
-          strokeLinecap="round"
-          fill="none"
-        />
-      </svg>
+    <div ref={rootRef} className="aurora" aria-hidden="true">
+      <div className="aurora-parallax aurora-parallax--a">
+        <svg
+          className="aurora-ribbon aurora-ribbon--a"
+          viewBox="0 0 1200 800"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="aurora-grad-a" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style={{ stopColor: 'var(--aurora-1)' }} />
+              <stop offset="35%" style={{ stopColor: 'var(--aurora-2)' }} />
+              <stop offset="70%" style={{ stopColor: 'var(--aurora-4)' }} />
+              <stop offset="100%" style={{ stopColor: 'var(--aurora-3)' }} />
+            </linearGradient>
+          </defs>
+          <path
+            d="M -200 420 C 100 180, 400 660, 700 380 S 1100 540, 1500 280"
+            stroke="url(#aurora-grad-a)"
+            strokeWidth="220"
+            strokeLinecap="round"
+            fill="none"
+          />
+        </svg>
+      </div>
+      <div className="aurora-parallax aurora-parallax--b">
+        <svg
+          className="aurora-ribbon aurora-ribbon--b"
+          viewBox="0 0 1200 800"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="aurora-grad-b" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" style={{ stopColor: 'var(--aurora-3)' }} />
+              <stop offset="50%" style={{ stopColor: 'var(--aurora-4)' }} />
+              <stop offset="100%" style={{ stopColor: 'var(--aurora-1)' }} />
+            </linearGradient>
+          </defs>
+          <path
+            d="M -200 600 C 200 700, 500 200, 800 500 S 1100 300, 1500 620"
+            stroke="url(#aurora-grad-b)"
+            strokeWidth="180"
+            strokeLinecap="round"
+            fill="none"
+          />
+        </svg>
+      </div>
       <div className="aurora-grain" />
     </div>
   )
@@ -105,14 +154,32 @@ function ScrollToTop() {
 }
 
 function HomePage() {
+  const handleNameMove = (e: ReactMouseEvent<HTMLHeadingElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    e.currentTarget.style.setProperty('--mx', `${e.clientX - rect.left}px`)
+    e.currentTarget.style.setProperty('--my', `${e.clientY - rect.top}px`)
+  }
+
+  const handleNameLeave = (e: ReactMouseEvent<HTMLHeadingElement>) => {
+    e.currentTarget.style.setProperty('--mx', '-9999px')
+    e.currentTarget.style.setProperty('--my', '-9999px')
+  }
+
   return (
     <section className="hero-section">
       <div className="hero-content">
         <span className="hero-eyebrow">STUDENT &middot; UCLA &middot; CS</span>
-        <h1 className="hero-name">Choidorj Bayarkhuu</h1>
+        <h1
+          className="hero-name"
+          onMouseMove={handleNameMove}
+          onMouseLeave={handleNameLeave}
+        >
+          Choidorj Bayarkhuu
+        </h1>
         <p className="hero-bio">
           I like building things that feel good to use.
         </p>
+        <NowPlaying />
       </div>
     </section>
   )
@@ -123,21 +190,32 @@ type ToggleTheme = () => void
 function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme }) {
   const { pathname } = useLocation()
   const isSpotifyActive = pathname === '/spotify'
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <>
-      <nav className="navbar">
+      <nav className={`navbar${isScrolled ? ' is-scrolled' : ''}`}>
         <div className="nav-content">
-          <Link to="/" className="nav-logo">Choi</Link>
+          <TransitionLink to="/" className="nav-logo" aria-label="Home">
+            <span className="nav-logo-text">Choi</span>
+            <span className="nav-logo-dot" aria-hidden="true" />
+          </TransitionLink>
           <div className="nav-icons">
-            <Link
+            <TransitionLink
               to="/spotify"
               className={`nav-icon-link${isSpotifyActive ? ' is-active' : ''}`}
               aria-label="Spotify"
             >
               {spotifyIcon}
               <span className="nav-tooltip">Spotify</span>
-            </Link>
+            </TransitionLink>
             {externalLinks.map((item) => (
               <a
                 key={item.label}
@@ -183,6 +261,7 @@ function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/spotify" element={<Spotify />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
     </>
