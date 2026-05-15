@@ -261,7 +261,8 @@ main {
   font-size: clamp(44px, 8.5vw, 84px);
   font-weight: 700;
   letter-spacing: -0.035em;
-  line-height: 1.02;
+  line-height: 1.15;
+  padding-bottom: 0.12em;
   /* The radial spotlight follows the cursor via JS-updated --mx / --my.
      At rest (off-canvas defaults), the gradient resolves to --fg-bright,
      preserving the original solid look. */
