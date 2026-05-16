@@ -1,37 +1,9 @@
 import { useEffect, useState } from 'react'
-
-type NowPlayingResponse = {
-  isPlaying: boolean
-  title: string
-  artist: string
-  album: string
-  albumImageUrl: string | null
-  songUrl: string
-  progressMs: number
-  durationMs: number
-  fetchedAt: number
-} | null
-
-type RecentlyPlayedResponse = {
-  items: Array<{
-    id: string
-    title: string
-    artist: string
-    album: string
-    albumImageUrl: string | null
-    songUrl: string
-    playedAt?: string
-  }>
-}
-
-type TrackInfo = {
-  title: string
-  artist: string
-  songUrl: string
-}
+import TransitionLink from './TransitionLink'
+import type { NowPlaying, Track } from './spotify-types'
 
 type ChipState = {
-  track: TrackInfo
+  track: { title: string; artist: string }
   isLive: boolean
 }
 
@@ -45,11 +17,11 @@ function useNowPlaying(): ChipState | null {
       try {
         const npRes = await fetch('/api/spotify/now-playing')
         if (npRes.ok) {
-          const np = (await npRes.json()) as NowPlayingResponse
+          const np = (await npRes.json()) as NowPlaying
           if (np && np.isPlaying) {
             if (!cancelled) {
               setState({
-                track: { title: np.title, artist: np.artist, songUrl: np.songUrl },
+                track: { title: np.title, artist: np.artist },
                 isLive: true,
               })
             }
@@ -59,17 +31,17 @@ function useNowPlaying(): ChipState | null {
 
         const rpRes = await fetch('/api/spotify/recently-played?limit=1')
         if (rpRes.ok) {
-          const rp = (await rpRes.json()) as RecentlyPlayedResponse
+          const rp = (await rpRes.json()) as { items: Track[] }
           const first = rp.items?.[0]
           if (first && !cancelled) {
             setState({
-              track: { title: first.title, artist: first.artist, songUrl: first.songUrl },
+              track: { title: first.title, artist: first.artist },
               isLive: false,
             })
           }
         }
       } catch {
-        // Silently fail — keep the hero clean when the API is unavailable.
+        // Silently fail — keep the prose clean when the API is unavailable.
       }
     }
 
@@ -87,38 +59,29 @@ function useNowPlaying(): ChipState | null {
 export default function NowPlaying() {
   const state = useNowPlaying()
 
-  if (!state) return null
+  // Fallback while data is unavailable: keep the inline entry-point to /spotify
+  // alive so the homepage still has its "button inside the text".
+  if (!state) {
+    return (
+      <p className="now-line">
+        choi&apos;s{' '}
+        <TransitionLink to="/spotify">spotify</TransitionLink>.
+      </p>
+    )
+  }
 
   const { track, isLive } = state
-  const label = isLive ? 'Now listening' : 'Was last listening to'
+  const label = isLive ? 'choi is listening to' : 'choi was last listening to'
 
   return (
-    <a
-      className={`hero-now-playing${isLive ? ' is-live' : ''}`}
-      href={track.songUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`${label}: ${track.title} by ${track.artist}. Listen on Spotify.`}
-    >
-      <span className="hero-now-playing-label">{label}</span>
-      <span className="hero-now-playing-row">
-        <span className="hero-now-playing-icon" aria-hidden="true">
-          {isLive ? (
-            <span className="equalizer">
-              <span />
-              <span />
-              <span />
-            </span>
-          ) : (
-            <span className="hero-now-playing-dot" />
-          )}
-        </span>
-        <span className="hero-now-playing-meta">
-          <span className="hero-now-playing-track">{track.title}</span>
-          <span className="hero-now-playing-dash" aria-hidden="true">—</span>
-          <span className="hero-now-playing-artist">{track.artist}</span>
-        </span>
-      </span>
-    </a>
+    <p className={`now-line${isLive ? ' is-live' : ''}`}>
+      {label}{' '}
+      <TransitionLink to="/spotify" aria-label={`${label} ${track.title} by ${track.artist}`}>
+        <span className="track">{track.title}</span>
+        <span aria-hidden="true"> — </span>
+        <span className="artist">{track.artist}</span>
+      </TransitionLink>
+      .
+    </p>
   )
 }

@@ -1,47 +1,23 @@
 :root {
-  --nav-bg: #01050D;
-  --bg-deep: #050B16;
-  --bg: #0A1626;
-  --bg-light: #193559;
-  --bg-lighter: #1C3D59;
-  --fg: #C8D6E5;
-  --fg-muted: #8899AA;
-  --fg-bright: #E8EEF4;
-  --accent: #6BB8EE;
-  --accent-hover: #8DCBF2;
+  /* Gruvbox dark (medium) */
+  --bg: #282828;
+  --bg-soft: #32302f;
+  --bg-hard: #1d2021;
+  --border: #3c3836;
+  --fg: #ebdbb2;
+  --fg-muted: #a89984;
+  --fg-bright: #fbf1c7;
+  --accent: #fabd2f;
+  --accent-2: #fe8019;
+  --accent-link: #83a598;
+  --accent-link-hover: #8ec07c;
+  --accent-red: #fb4934;
 
-  --nav-translucent: rgba(5, 11, 22, 0.55);
-  --nav-border: rgba(255, 255, 255, 0.06);
+  --font: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  --aurora-1: #1E5C9C;
-  --aurora-2: #2A7FBF;
-  --aurora-3: #143458;
-  --aurora-4: #5340A1;
-
-  /* Aurora ribbon speed. Lower = faster, higher = slower.
-     Ribbon B animates at 1.4× this duration for asynchronous flow. */
-  --aurora-speed: 15s;
-
-  /* Cinematic glass surfaces — small translucent cards layered above the aurora. */
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-bg-hover: rgba(255, 255, 255, 0.07);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-highlight: rgba(255, 255, 255, 0.12);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
-  --accent-soft: rgba(107, 184, 238, 0.3);
-
-  /* Reused gradient for hero name, progress bars, accent moments. */
-  --gradient-text: linear-gradient(120deg, var(--accent), var(--aurora-2), var(--aurora-4));
-
-  /* Section labels: tiny tracked uppercase. */
-  --label-tracking: 0.18em;
-
-  --font: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-serif: 'Sentient', Georgia, 'Times New Roman', serif;
-
-  font: 16px/1.6 var(--font);
+  font: 15px/1.65 var(--font);
   color: var(--fg);
-  background: var(--bg-deep);
+  background: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -49,32 +25,19 @@
 }
 
 [data-theme="light"] {
-  --nav-bg: #E8EEF4;
-  --bg-deep: #F4F7FB;
-  --bg: #F0F4F8;
-  --bg-light: #FFFFFF;
-  --bg-lighter: #D8E0EA;
-  --fg: #102540;
-  --fg-muted: #4A5568;
-  --fg-bright: #01050D;
-  --accent: #1C3D59;
-  --accent-hover: #193559;
-
-  --nav-translucent: rgba(244, 247, 251, 0.6);
-  --nav-border: rgba(0, 0, 0, 0.06);
-
-  --aurora-1: #7AAEE6;
-  --aurora-2: #F0B4C8;
-  --aurora-3: #B6A5E6;
-  --aurora-4: #8AD6D6;
-
-  /* Glass tokens flip to translucent white-ish on light backgrounds. */
-  --glass-bg: rgba(255, 255, 255, 0.55);
-  --glass-bg-hover: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --glass-highlight: rgba(255, 255, 255, 0.95);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-  --accent-soft: rgba(28, 61, 89, 0.22);
+  /* Gruvbox light (medium) */
+  --bg: #fbf1c7;
+  --bg-soft: #f2e5bc;
+  --bg-hard: #f9f5d7;
+  --border: #d5c4a1;
+  --fg: #3c3836;
+  --fg-muted: #7c6f64;
+  --fg-bright: #282828;
+  --accent: #b57614;
+  --accent-2: #af3a03;
+  --accent-link: #076678;
+  --accent-link-hover: #427b58;
+  --accent-red: #9d0006;
 }
 
 * {
@@ -84,44 +47,49 @@
 }
 
 html {
-  background: var(--bg-deep);
-  scroll-behavior: smooth;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  background: var(--bg);
 }
 
 body {
   margin: 0;
-  background: transparent;
+  background: var(--bg);
+  color: var(--fg);
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
 h1, h2, h3 {
   color: var(--fg-bright);
   font-family: var(--font);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color 0.2s;
+  color: var(--accent-link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
 }
 
 a:hover {
-  color: var(--accent-hover);
+  color: var(--accent-link-hover);
 }
 
-/* View Transitions: subtle 0.5s cross-fade for theme toggle. */
+a:focus-visible {
+  outline: 1px dashed var(--accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg-hard);
+}
+
+/* View Transitions: subtle cross-fade for theme toggle. */
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 0.5s;
+  animation-duration: 0.25s;
   animation-timing-function: ease;
   mix-blend-mode: normal;
 }

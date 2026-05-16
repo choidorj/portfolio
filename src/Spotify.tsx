@@ -1,34 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-
-type NowPlaying = {
-  isPlaying: boolean
-  title: string
-  artist: string
-  album: string
-  albumImageUrl: string | null
-  songUrl: string
-  progressMs: number
-  durationMs: number
-  fetchedAt: number
-} | null
-
-type Track = {
-  id: string
-  title: string
-  artist: string
-  album: string
-  albumImageUrl: string | null
-  songUrl: string
-  playedAt?: string
-}
-
-type Artist = {
-  id: string
-  name: string
-  imageUrl: string | null
-  genres: string[]
-  url: string
-}
+import type { NowPlaying, Track, Artist } from './spotify-types'
 
 type FetchState<T> = { data: T | null; loading: boolean; error: string | null }
 
@@ -43,7 +14,7 @@ function useFetch<T>(url: string, refreshMs?: number): FetchState<T> {
     const load = async () => {
       try {
         const res = await fetch(url)
-        if (!res.ok) throw new Error(`Request failed (${res.status})`)
+        if (!res.ok) throw new Error(`request failed (${res.status})`)
         const json = (await res.json()) as T
         if (!cancelled) {
           setData(json)
@@ -92,7 +63,7 @@ function NowPlayingCard() {
 
   return (
     <section className="spotify-section">
-      <h2>Now Playing</h2>
+      <h2>now listening to</h2>
       {loading ? (
         <div className="now-playing now-playing--skeleton">
           <div className="now-playing-cover skeleton" />
@@ -104,8 +75,8 @@ function NowPlayingCard() {
       ) : !data || !data.isPlaying ? (
         <div className="now-playing now-playing--idle">
           <div className="now-playing-meta">
-            <span className="now-playing-title">Not currently listening.</span>
-            <span className="now-playing-artist">Please check back later :)</span>
+            <span className="now-playing-title">not currently listening.</span>
+            <span className="now-playing-artist">check back later :)</span>
           </div>
         </div>
       ) : (
@@ -124,9 +95,6 @@ function NowPlayingCard() {
             <span className="now-playing-title">{data.title}</span>
             <span className="now-playing-artist">{data.artist}</span>
           </div>
-          <span className="equalizer" aria-hidden="true">
-            <span /><span /><span />
-          </span>
           {data.durationMs > 0 && (
             <div className="now-playing-progress" aria-hidden="true">
               <div ref={fillRef} className="now-playing-progress-fill" />
@@ -145,28 +113,30 @@ function TopArtists() {
 
   return (
     <section className="spotify-section">
-      <h2>Top Artists</h2>
+      <h2>top artists</h2>
       {error ? (
-        <ErrorPlaceholder message={error} />
+        <Placeholder message={error} />
       ) : loading ? (
-        <div className="spotify-grid">
+        <div className="artist-list">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="artist-card artist-card--skeleton">
+            <div key={i} className="artist-row">
+              <span className="track-number">{i + 1}</span>
               <div className="artist-img skeleton" />
               <div className="skeleton skeleton-line skeleton-line--md" />
             </div>
           ))}
         </div>
       ) : (
-        <div className="spotify-grid">
-          {(data?.items ?? []).map((a) => (
+        <div className="artist-list">
+          {(data?.items ?? []).map((a, i) => (
             <a
               key={a.id}
               href={a.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="artist-card"
+              className="artist-row"
             >
+              <span className="track-number">{i + 1}</span>
               {a.imageUrl ? (
                 <img className="artist-img" src={a.imageUrl} alt={a.name} />
               ) : (
@@ -188,9 +158,9 @@ function TopTracks() {
 
   return (
     <section className="spotify-section">
-      <h2>Top Tracks</h2>
+      <h2>top tracks</h2>
       {error ? (
-        <ErrorPlaceholder message={error} />
+        <Placeholder message={error} />
       ) : loading ? (
         <TrackListSkeleton count={5} />
       ) : (
@@ -207,9 +177,9 @@ function RecentlyPlayed() {
 
   return (
     <section className="spotify-section">
-      <h2>Recently Played</h2>
+      <h2>was last listening to</h2>
       {error ? (
-        <ErrorPlaceholder message={error} />
+        <Placeholder message={error} />
       ) : loading ? (
         <TrackListSkeleton count={5} />
       ) : (
@@ -221,7 +191,7 @@ function RecentlyPlayed() {
 
 function TrackList({ tracks }: { tracks: Track[] }) {
   if (tracks.length === 0) {
-    return <ErrorPlaceholder message="Nothing here yet." />
+    return <Placeholder message="nothing here yet." />
   }
   return (
     <div className="track-list">
@@ -241,6 +211,7 @@ function TrackList({ tracks }: { tracks: Track[] }) {
           )}
           <div className="track-info">
             <span className="track-title">{t.title}</span>
+            <span className="track-dash" aria-hidden="true">—</span>
             <span className="track-artist">{t.artist}</span>
           </div>
         </a>
@@ -253,7 +224,7 @@ function TrackListSkeleton({ count }: { count: number }) {
   return (
     <div className="track-list">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="track-item track-item--skeleton">
+        <div key={i} className="track-item">
           <span className="track-number">{i + 1}</span>
           <div className="track-cover skeleton" />
           <div className="track-info">
@@ -266,19 +237,15 @@ function TrackListSkeleton({ count }: { count: number }) {
   )
 }
 
-function ErrorPlaceholder({ message }: { message: string }) {
-  return (
-    <div className="spotify-placeholder">
-      <p>{message}</p>
-    </div>
-  )
+function Placeholder({ message }: { message: string }) {
+  return <div className="spotify-placeholder">{message}</div>
 }
 
 export default function Spotify() {
   return (
-    <div className="spotify-page">
-      <h1>Spotify</h1>
-      <p className="page-subtitle">What I've been listening to lately.</p>
+    <div>
+      <h1 className="page-title">spotify</h1>
+      <p className="page-subtitle">what i&apos;ve been listening to lately.</p>
 
       <NowPlayingCard />
       <TopArtists />

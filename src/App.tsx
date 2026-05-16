@@ -1,187 +1,51 @@
-import { useState, useEffect, useRef, type MouseEvent as ReactMouseEvent } from 'react'
+import { useState, useEffect } from 'react'
 import { flushSync } from 'react-dom'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import './App.css'
 import Spotify from './Spotify'
+import Notes from './Notes'
 import NotFound from './NotFound'
 import NowPlaying from './NowPlaying'
 import TransitionLink from './TransitionLink'
 
 type Theme = 'light' | 'dark'
 
-const externalLinks = [
-  {
-    label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/choidorjbayarkhuu/',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-      </svg>
-    ),
-  },
-  {
-    label: 'GitHub',
-    href: 'https://github.com/chdrj',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Email',
-    href: 'mailto:chdrj@g.ucla.edu',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-        <polyline points="22,6 12,13 2,6" />
-      </svg>
-    ),
-  },
-]
-
-const spotifyIcon = (
-  <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
-  </svg>
-)
-
-function AuroraBackground() {
-  const rootRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduceMotion) return
-
-    const el = rootRef.current
-    if (!el) return
-
-    let rafId = 0
-    let targetX = 0.5
-    let targetY = 0.5
-    let curX = 0.5
-    let curY = 0.5
-
-    const tick = () => {
-      // Critically-damped easing toward the cursor.
-      curX += (targetX - curX) * 0.06
-      curY += (targetY - curY) * 0.06
-      el.style.setProperty('--mx', curX.toFixed(4))
-      el.style.setProperty('--my', curY.toFixed(4))
-
-      if (Math.abs(targetX - curX) > 0.0008 || Math.abs(targetY - curY) > 0.0008) {
-        rafId = requestAnimationFrame(tick)
-      } else {
-        rafId = 0
-      }
-    }
-
-    const onMove = (e: PointerEvent) => {
-      targetX = e.clientX / window.innerWidth
-      targetY = e.clientY / window.innerHeight
-      if (!rafId) rafId = requestAnimationFrame(tick)
-    }
-
-    window.addEventListener('pointermove', onMove, { passive: true })
-    return () => {
-      window.removeEventListener('pointermove', onMove)
-      if (rafId) cancelAnimationFrame(rafId)
-    }
-  }, [])
-
-  return (
-    <div ref={rootRef} className="aurora" aria-hidden="true">
-      <div className="aurora-parallax aurora-parallax--a">
-        <svg
-          className="aurora-ribbon aurora-ribbon--a"
-          viewBox="0 0 1200 800"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="aurora-grad-a" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style={{ stopColor: 'var(--aurora-1)' }} />
-              <stop offset="35%" style={{ stopColor: 'var(--aurora-2)' }} />
-              <stop offset="70%" style={{ stopColor: 'var(--aurora-4)' }} />
-              <stop offset="100%" style={{ stopColor: 'var(--aurora-3)' }} />
-            </linearGradient>
-          </defs>
-          <path
-            d="M -200 420 C 100 180, 400 660, 700 380 S 1100 540, 1500 280"
-            stroke="url(#aurora-grad-a)"
-            strokeWidth="220"
-            strokeLinecap="round"
-            fill="none"
-          />
-        </svg>
-      </div>
-      <div className="aurora-parallax aurora-parallax--b">
-        <svg
-          className="aurora-ribbon aurora-ribbon--b"
-          viewBox="0 0 1200 800"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="aurora-grad-b" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" style={{ stopColor: 'var(--aurora-3)' }} />
-              <stop offset="50%" style={{ stopColor: 'var(--aurora-4)' }} />
-              <stop offset="100%" style={{ stopColor: 'var(--aurora-1)' }} />
-            </linearGradient>
-          </defs>
-          <path
-            d="M -200 600 C 200 700, 500 200, 800 500 S 1100 300, 1500 620"
-            stroke="url(#aurora-grad-b)"
-            strokeWidth="180"
-            strokeLinecap="round"
-            fill="none"
-          />
-        </svg>
-      </div>
-      <div className="aurora-grain" />
-    </div>
-  )
-}
-
 function ScrollToTop() {
   const { pathname } = useLocation()
   useEffect(() => {
-    // 'instant' overrides the global scroll-behavior: smooth so route
-    // changes don't animate from the previous scroll position.
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [pathname])
   return null
 }
 
 function HomePage() {
-  const handleNameMove = (e: ReactMouseEvent<HTMLHeadingElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    e.currentTarget.style.setProperty('--mx', `${e.clientX - rect.left}px`)
-    e.currentTarget.style.setProperty('--my', `${e.clientY - rect.top}px`)
-  }
-
-  const handleNameLeave = (e: ReactMouseEvent<HTMLHeadingElement>) => {
-    e.currentTarget.style.setProperty('--mx', '-9999px')
-    e.currentTarget.style.setProperty('--my', '-9999px')
-  }
-
   return (
-    <section className="hero-section">
-      <div className="hero-content">
-        <span className="hero-eyebrow">STUDENT &middot; UCLA &middot; CS</span>
-        <h1
-          className="hero-name"
-          onMouseMove={handleNameMove}
-          onMouseLeave={handleNameLeave}
+    <div className="prose">
+      <h1>choidorj bayarkhuu</h1>
+      <p className="subtitle">undergraduate at ucla studying computer science.</p>
+      <p>
+        hi i'm choi. this site is for short writings, project notes, and some things that are currently on my mind.
+      </p>
+      <p>
+        i'm interested in building things that feel good to use. outside of school, i enjoy travelling, listening to music, and some video games. you can find me on{' '}
+        <a href="https://github.com/chdrj" target="_blank" rel="noopener noreferrer">
+          github
+        </a>
+        ,{' '}
+        <a
+          href="https://www.linkedin.com/in/choidorjbayarkhuu/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          Choidorj Bayarkhuu
-        </h1>
-        <p className="hero-bio">
-          I like building things that feel good to use.
-        </p>
-      </div>
+          linkedin
+        </a>
+        , or{' '}
+        <a href="mailto:chdrj@g.ucla.edu">email</a>.
+      </p>
       <NowPlaying />
-    </section>
+    </div>
   )
 }
 
@@ -189,82 +53,72 @@ type ToggleTheme = () => void
 
 function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme }) {
   const { pathname } = useLocation()
-  const isSpotifyActive = pathname === '/spotify'
-  const [isScrolled, setIsScrolled] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 8)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  const isHome = pathname === '/'
+  const isNotes = pathname === '/notes'
+  const nextLabel = theme === 'dark' ? 'light' : 'dark'
 
   return (
-    <>
-      <nav className={`navbar${isScrolled ? ' is-scrolled' : ''}`}>
-        <div className="nav-content">
-          <TransitionLink to="/" className="nav-logo" aria-label="Home">
-            <span className="nav-logo-text">Choi</span>
-            <span className="nav-logo-dot" aria-hidden="true" />
+    <div className="shell">
+      <header className="header">
+        <TransitionLink to="/" className="header-logo" aria-label="Home">
+          choi
+        </TransitionLink>
+        <nav className="header-nav">
+          <TransitionLink to="/" className={isHome ? 'is-active' : ''}>
+            home
           </TransitionLink>
-          <div className="nav-icons">
-            <TransitionLink
-              to="/spotify"
-              className={`nav-icon-link${isSpotifyActive ? ' is-active' : ''}`}
-              aria-label="Spotify"
-            >
-              {spotifyIcon}
-              <span className="nav-tooltip">Spotify</span>
-            </TransitionLink>
-            {externalLinks.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="nav-icon-link"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={item.label}
+          <TransitionLink to="/notes" className={isNotes ? 'is-active' : ''}>
+            notes
+          </TransitionLink>
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${nextLabel} theme`}
+          >
+            {theme === 'dark' ? (
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                width="16"
+                height="16"
+                aria-hidden="true"
               >
-                {item.icon}
-                <span className="nav-tooltip">{item.label}</span>
-              </a>
-            ))}
-            <button
-              className="nav-icon-link theme-toggle"
-              onClick={toggleTheme}
-              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-            >
-              {theme === 'dark' ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
-                  <circle cx="12" cy="12" r="5" />
-                  <line x1="12" y1="1" x2="12" y2="3" />
-                  <line x1="12" y1="21" x2="12" y2="23" />
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                  <line x1="1" y1="12" x2="3" y2="12" />
-                  <line x1="21" y1="12" x2="23" y2="12" />
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                </svg>
-              )}
-              <span className="nav-tooltip">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-            </button>
-          </div>
-        </div>
-      </nav>
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+              </svg>
+            ) : (
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                width="16"
+                height="16"
+                aria-hidden="true"
+              >
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
+        </nav>
+      </header>
 
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/notes" element={<Notes />} />
           <Route path="/spotify" element={<Spotify />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-    </>
+    </div>
   )
 }
 
@@ -284,7 +138,8 @@ function App() {
     const next: Theme = theme === 'light' ? 'dark' : 'light'
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const supportsViewTransition = typeof document !== 'undefined' && 'startViewTransition' in document
+    const supportsViewTransition =
+      typeof document !== 'undefined' && 'startViewTransition' in document
 
     if (!supportsViewTransition || reduceMotion) {
       setTheme(next)
@@ -298,7 +153,6 @@ function App() {
 
   return (
     <BrowserRouter>
-      <AuroraBackground />
       <ScrollToTop />
       <Layout theme={theme} toggleTheme={toggleTheme} />
       <Analytics />
