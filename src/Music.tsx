@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
-import type { NowPlaying, Track, Artist } from './spotify-types'
+import { useEffect, useState } from 'react'
+import type { Track, Artist } from './spotify-types'
 
 type FetchState<T> = { data: T | null; loading: boolean; error: string | null }
 
-function useFetch<T>(url: string, refreshMs?: number): FetchState<T> {
+function useFetch<T>(url: string): FetchState<T> {
   const [data, setData] = useState<T | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -30,80 +30,12 @@ function useFetch<T>(url: string, refreshMs?: number): FetchState<T> {
     }
 
     load()
-    const interval = refreshMs ? setInterval(load, refreshMs) : null
     return () => {
       cancelled = true
-      if (interval) clearInterval(interval)
     }
-  }, [url, refreshMs])
+  }, [url])
 
   return { data, loading, error }
-}
-
-function NowPlayingCard() {
-  const { data, loading } = useFetch<NowPlaying>('/api/spotify/now-playing', 30_000)
-  const fillRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const fill = fillRef.current
-    if (!fill || !data || !data.isPlaying || data.durationMs <= 0) return
-
-    let raf = 0
-    const tick = () => {
-      const elapsed = Date.now() - data.fetchedAt
-      const progress = Math.min(Math.max(data.progressMs + elapsed, 0), data.durationMs)
-      fill.style.width = `${(progress / data.durationMs) * 100}%`
-      if (progress < data.durationMs) {
-        raf = requestAnimationFrame(tick)
-      }
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [data])
-
-  return (
-    <section className="spotify-section">
-      <h2>now listening to</h2>
-      {loading ? (
-        <div className="now-playing now-playing--skeleton">
-          <div className="now-playing-cover skeleton" />
-          <div className="now-playing-meta">
-            <div className="skeleton skeleton-line skeleton-line--lg" />
-            <div className="skeleton skeleton-line skeleton-line--md" />
-          </div>
-        </div>
-      ) : !data || !data.isPlaying ? (
-        <div className="now-playing now-playing--idle">
-          <div className="now-playing-meta">
-            <span className="now-playing-title">not currently listening.</span>
-            <span className="now-playing-artist">check back later :)</span>
-          </div>
-        </div>
-      ) : (
-        <a
-          className="now-playing"
-          href={data.songUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {data.albumImageUrl ? (
-            <img className="now-playing-cover" src={data.albumImageUrl} alt={data.album} />
-          ) : (
-            <div className="now-playing-cover" />
-          )}
-          <div className="now-playing-meta">
-            <span className="now-playing-title">{data.title}</span>
-            <span className="now-playing-artist">{data.artist}</span>
-          </div>
-          {data.durationMs > 0 && (
-            <div className="now-playing-progress" aria-hidden="true">
-              <div ref={fillRef} className="now-playing-progress-fill" />
-            </div>
-          )}
-        </a>
-      )}
-    </section>
-  )
 }
 
 function TopArtists() {
@@ -177,7 +109,7 @@ function RecentlyPlayed() {
 
   return (
     <section className="spotify-section">
-      <h2>was last listening to</h2>
+      <h2>recently played</h2>
       {error ? (
         <Placeholder message={error} />
       ) : loading ? (
@@ -241,13 +173,12 @@ function Placeholder({ message }: { message: string }) {
   return <div className="spotify-placeholder">{message}</div>
 }
 
-export default function Spotify() {
+export default function Music() {
   return (
     <div>
-      <h1 className="page-title">spotify</h1>
+      <h1 className="page-title">music</h1>
       <p className="page-subtitle">what i&apos;ve been listening to lately.</p>
 
-      <NowPlayingCard />
       <TopArtists />
       <TopTracks />
       <RecentlyPlayed />

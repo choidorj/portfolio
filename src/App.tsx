@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import './App.css'
-import Spotify from './Spotify'
+import Music from './Music'
 import Notes from './Notes'
 import NotFound from './NotFound'
 import NowPlaying from './NowPlaying'
@@ -29,7 +29,8 @@ function HomePage() {
         hi i'm choi. this site is for short writings, project notes, and some things that are currently on my mind.
       </p>
       <p>
-        i'm interested in building things that feel good to use. outside of school, i enjoy travelling, listening to music, and some video games. you can find me on{' '}
+        i'm interested in building things that feel good to use. outside of school, i enjoy travelling, listening to{' '}
+        <TransitionLink to="/music">music</TransitionLink>, and some video games. you can find me on{' '}
         <a href="https://github.com/chdrj" target="_blank" rel="noopener noreferrer">
           github
         </a>
@@ -114,7 +115,7 @@ function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/notes" element={<Notes />} />
-          <Route path="/spotify" element={<Spotify />} />
+          <Route path="/music" element={<Music />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

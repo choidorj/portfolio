@@ -59,13 +59,13 @@ function useNowPlaying(): ChipState | null {
 export default function NowPlaying() {
   const state = useNowPlaying()
 
-  // Fallback while data is unavailable: keep the inline entry-point to /spotify
+  // Fallback while data is unavailable: keep the inline entry-point to /music
   // alive so the homepage still has its "button inside the text".
   if (!state) {
     return (
       <p className="now-line">
         choi&apos;s{' '}
-        <TransitionLink to="/spotify">spotify</TransitionLink>.
+        <TransitionLink to="/music">music</TransitionLink>.
       </p>
     )
   }
@@ -76,7 +76,7 @@ export default function NowPlaying() {
   return (
     <p className={`now-line${isLive ? ' is-live' : ''}`}>
       {label}{' '}
-      <TransitionLink to="/spotify" aria-label={`${label} ${track.title} by ${track.artist}`}>
+      <TransitionLink to="/music" aria-label={`${label} ${track.title} by ${track.artist}`}>
         <span className="track">{track.title}</span>
         <span aria-hidden="true"> — </span>
         <span className="artist">{track.artist}</span>
