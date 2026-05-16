@@ -59,16 +59,10 @@ function useNowPlaying(): ChipState | null {
 export default function NowPlaying() {
   const state = useNowPlaying()
 
-  // Fallback while data is unavailable: keep the inline entry-point to /music
-  // alive so the homepage still has its "button inside the text".
-  if (!state) {
-    return (
-      <p className="now-line">
-        choi&apos;s{' '}
-        <TransitionLink to="/music">music</TransitionLink>.
-      </p>
-    )
-  }
+  // Render nothing until the first fetch resolves — avoids a short
+  // pre-fetch line flickering into the real "is listening to" text.
+  // The /music page is still reachable via the inline link in the home prose.
+  if (!state) return null
 
   const { track, isLive } = state
   const label = isLive ? 'choi is listening to' : 'choi was last listening to'
