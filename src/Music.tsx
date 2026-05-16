@@ -40,7 +40,7 @@ function useFetch<T>(url: string): FetchState<T> {
 
 function TopArtists() {
   const { data, loading, error } = useFetch<{ items: Artist[] }>(
-    '/api/spotify/top-artists?limit=8',
+    '/api/spotify/top-artists?limit=5',
   )
 
   return (

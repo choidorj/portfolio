@@ -213,6 +213,138 @@
   border: 1px dashed var(--border);
 }
 
+/* Notes feed */
+
+.notes-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notes-item { border-left: 2px solid transparent; }
+.notes-item:hover { border-left-color: var(--accent); }
+
+.notes-link {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  padding: 10px 12px;
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.notes-link:hover {
+  background: var(--bg-soft);
+  color: var(--fg);
+}
+
+.notes-title {
+  font-weight: 700;
+  color: var(--fg-bright);
+}
+
+.notes-date {
+  font-size: 13px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+.notes-desc {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+/* Note detail page */
+
+.note-back {
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+
+.note-meta {
+  color: var(--fg-muted);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.note-lead {
+  color: var(--fg-muted);
+  font-style: italic;
+  margin: 24px 0 8px;
+}
+
+.note-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  line-height: 1.75;
+  max-width: 60ch;
+  margin-top: 24px;
+}
+
+.note-body h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg-bright);
+  margin-top: 16px;
+}
+.note-body h2::before { content: '## '; color: var(--accent); }
+
+.note-body h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg-bright);
+  margin-top: 12px;
+}
+.note-body h3::before { content: '### '; color: var(--accent); }
+
+.note-body ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.note-body li {
+  padding-left: 20px;
+  position: relative;
+}
+
+.note-body li::before {
+  content: '-';
+  position: absolute;
+  left: 4px;
+  color: var(--accent);
+}
+
+.note-body code {
+  font-family: var(--font);
+  background: var(--bg-soft);
+  padding: 1px 6px;
+  font-size: 0.9em;
+  color: var(--fg-bright);
+}
+
+.note-body pre {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--accent);
+  padding: 12px 14px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.note-body pre code {
+  background: transparent;
+  padding: 0;
+  color: var(--fg);
+}
+
 /* 404 */
 
 .notfound { display: flex; flex-direction: column; gap: 16px; }

@@ -6,6 +6,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react'
 import './App.css'
 import Music from './Music'
 import Notes from './Notes'
+import NoteDetail from './NoteDetail'
 import NotFound from './NotFound'
 import NowPlaying from './NowPlaying'
 import TransitionLink from './TransitionLink'
@@ -55,7 +56,7 @@ type ToggleTheme = () => void
 function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme }) {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
-  const isNotes = pathname === '/notes'
+  const isNotes = pathname === '/notes' || pathname.startsWith('/notes/')
   const nextLabel = theme === 'dark' ? 'light' : 'dark'
 
   return (
@@ -115,6 +116,7 @@ function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/notes" element={<Notes />} />
+          <Route path="/notes/:slug" element={<NoteDetail />} />
           <Route path="/music" element={<Music />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
