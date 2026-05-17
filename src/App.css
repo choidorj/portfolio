@@ -3,7 +3,10 @@
 .shell {
   max-width: 640px;
   margin: 0 auto;
-  padding: 48px 24px 96px;
+  padding: 48px 24px 32px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -343,6 +346,16 @@
   background: transparent;
   padding: 0;
   color: var(--fg);
+}
+
+/* Footer */
+
+.footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+  color: var(--fg-muted);
+  font-size: 13px;
 }
 
 /* 404 */

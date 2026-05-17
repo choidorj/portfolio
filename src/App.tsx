@@ -124,6 +124,10 @@ function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+
+      <footer className="footer">
+        ~ {new Date().getFullYear()} choi
+      </footer>
     </div>
   )
 }
