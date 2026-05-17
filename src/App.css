@@ -18,6 +18,13 @@
   border-bottom: 1px dashed var(--border);
 }
 
+/* Guarantee breathing room between page content and the footer's
+   dashed border, even on long pages where `.footer { margin-top: auto }`
+   collapses to 0 (e.g. /music). */
+main {
+  padding-bottom: 48px;
+}
+
 .header-logo {
   color: var(--fg-bright);
   font-weight: 700;
