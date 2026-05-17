@@ -27,14 +27,14 @@ function HomePage() {
       <h1>choidorj bayarkhuu</h1>
       <p className="subtitle">undergraduate at ucla studying computer science.</p>
       <p>
-        hi i'm choi. this site is for short writings, project notes, and some things that are currently on my mind.
+        hi i'm choi. this site is for short writings, project notes, and things that are currently on my mind.
       </p>
       <p>
-        i like building things that feel good to use. lately i've been interested in shaping tools to my liking and writing little scripts to automate something I probably shouldn't.
+        i like building things that feel good to use. lately, i've been interested in customizing tools and writing little scripts to automate things I probably shouldn't.
       </p>
       <p>
-        outside of school, i enjoy travelling, listening to{' '}
-        <TransitionLink to="/music">music</TransitionLink>, and some video games. you can find me on{' '}
+        outside of school, i enjoy traveling, listening to{' '}
+        <TransitionLink to="/music">music</TransitionLink>, and playing video games. you can find me on{' '}
         <a href="https://github.com/chdrj" target="_blank" rel="noopener noreferrer">
           github
         </a>

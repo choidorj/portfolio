@@ -9,7 +9,7 @@ that everything renders the way I want.
 
 ## things I plan to write about
 
-- short technical notes 
+- short technical notes
 - book and paper notes
 - whatever I'm currently thinking about
 
