@@ -1,3 +1,13 @@
+@font-face {
+  font-family: 'Departure Mono';
+  src:
+    url('/fonts/DepartureMono-Regular.woff2') format('woff2'),
+    url('/fonts/DepartureMono-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Gruvbox dark (medium) */
   --bg: #282828;
@@ -13,7 +23,7 @@
   --accent-link-hover: #8ec07c;
   --accent-red: #fb4934;
 
-  --font: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font: 'Departure Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   font: 15px/1.65 var(--font);
   color: var(--fg);

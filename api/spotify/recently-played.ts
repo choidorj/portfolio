@@ -18,7 +18,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       title: track.name,
       artist: track.artists.map((a) => a.name).join(', '),
       album: track.album.name,
-      albumImageUrl: track.album.images[1]?.url ?? track.album.images[0]?.url ?? null,
+      albumImageUrl: track.album.images[2]?.url ?? track.album.images[1]?.url ?? track.album.images[0]?.url ?? null,
       songUrl: track.external_urls.spotify,
       playedAt: played_at,
     }))
