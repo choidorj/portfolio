@@ -35,7 +35,7 @@ function HomePage() {
       <p>
         outside of school, i enjoy traveling, listening to{' '}
         <TransitionLink to="/music">music</TransitionLink>, and playing video games. you can find me on{' '}
-        <a href="https://github.com/chdrj" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/choidorj" target="_blank" rel="noopener noreferrer">
           github
         </a>
         ,{' '}
