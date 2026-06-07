@@ -21,7 +21,18 @@ function getEnv(): Env {
   return { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN }
 }
 
+// Cache the access token in module scope. Vercel reuses warm function
+// instances, so this survives across invocations and avoids a token refresh
+// round-trip on every request. Tokens last ~1h; refresh slightly early so we
+// never use one that expires mid-request.
+let cachedToken: { value: string; expiresAt: number } | null = null
+const TOKEN_EXPIRY_BUFFER_MS = 60_000
+
 async function getAccessToken(): Promise<string> {
+  if (cachedToken && Date.now() < cachedToken.expiresAt) {
+    return cachedToken.value
+  }
+
   const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN } = getEnv()
   const basic = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64')
 
@@ -42,7 +53,11 @@ async function getAccessToken(): Promise<string> {
     throw new Error(`Spotify token refresh failed (${res.status}): ${text}`)
   }
 
-  const json = (await res.json()) as { access_token: string }
+  const json = (await res.json()) as { access_token: string; expires_in: number }
+  cachedToken = {
+    value: json.access_token,
+    expiresAt: Date.now() + json.expires_in * 1000 - TOKEN_EXPIRY_BUFFER_MS,
+  }
   return json.access_token
 }
 
@@ -63,6 +78,25 @@ export async function spotifyFetch<T = unknown>(path: string): Promise<T | null>
   return (await res.json()) as T
 }
 
+export type TimeRange = 'short_term' | 'medium_term' | 'long_term'
+const TIME_RANGES: TimeRange[] = ['short_term', 'medium_term', 'long_term']
+
+// Whitelist the Spotify time_range param; fall back to short_term for anything
+// unexpected (missing, array, or invalid value).
+export function parseTimeRange(value: unknown): TimeRange {
+  return typeof value === 'string' && (TIME_RANGES as string[]).includes(value)
+    ? (value as TimeRange)
+    : 'short_term'
+}
+
+// Clamp the limit to Spotify's accepted 1..50 range, falling back when the
+// value is missing, non-numeric, or out of bounds.
+export function parseLimit(value: unknown, fallback: number): number {
+  const n = Math.floor(Number(value))
+  if (!Number.isFinite(n) || n < 1) return fallback
+  return Math.min(n, 50)
+}
+
 export type SpotifyImage = { url: string; height: number; width: number }
 
 export type SpotifyArtist = {
@@ -70,7 +104,6 @@ export type SpotifyArtist = {
   name: string
   external_urls: { spotify: string }
   images?: SpotifyImage[]
-  genres?: string[]
 }
 
 export type SpotifyTrack = {

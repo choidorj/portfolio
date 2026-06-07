@@ -1,12 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { spotifyFetch, type SpotifyArtist } from '../_lib/spotify.js'
+import { spotifyFetch, parseLimit, parseTimeRange, type SpotifyArtist } from '../_lib/spotify.js'
 
 type TopArtistsResponse = { items: SpotifyArtist[] }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const range = (req.query.range as string) ?? 'short_term' // short_term | medium_term | long_term
-    const limit = Math.min(Number(req.query.limit) || 6, 50)
+    const range = parseTimeRange(req.query.range)
+    const limit = parseLimit(req.query.limit, 6)
 
     const data = await spotifyFetch<TopArtistsResponse>(
       `/me/top/artists?time_range=${range}&limit=${limit}`,
@@ -18,7 +18,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Spotify returns ~[640, 320, 160] for artists; pick the smallest
       // since these render in a 32px (64px retina) avatar.
       imageUrl: a.images?.[2]?.url ?? a.images?.[1]?.url ?? a.images?.[0]?.url ?? null,
-      genres: a.genres?.slice(0, 2) ?? [],
       url: a.external_urls.spotify,
     }))
 

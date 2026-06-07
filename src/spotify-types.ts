@@ -1,5 +1,5 @@
 // Shape of the JSON payloads returned by /api/spotify/* — shared between
-// the homepage NowPlaying line and the /spotify page.
+// the homepage NowPlaying line and the /music page.
 
 export type NowPlaying = {
   isPlaying: boolean
@@ -27,6 +27,5 @@ export type Artist = {
   id: string
   name: string
   imageUrl: string | null
-  genres: string[]
   url: string
 }

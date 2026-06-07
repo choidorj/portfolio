@@ -12,6 +12,7 @@ function useNowPlaying(): ChipState | null {
 
   useEffect(() => {
     let cancelled = false
+    let intervalId: ReturnType<typeof setInterval> | undefined
 
     const load = async () => {
       try {
@@ -45,11 +46,38 @@ function useNowPlaying(): ChipState | null {
       }
     }
 
-    load()
-    const id = setInterval(load, 30_000)
+    const startPolling = () => {
+      if (intervalId !== undefined) return
+      intervalId = setInterval(load, 30_000)
+    }
+
+    const stopPolling = () => {
+      if (intervalId !== undefined) {
+        clearInterval(intervalId)
+        intervalId = undefined
+      }
+    }
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        load()
+        startPolling()
+      } else {
+        stopPolling()
+      }
+    }
+
+    // Poll only while the tab is visible to avoid needless requests.
+    if (document.visibilityState === 'visible') {
+      load()
+      startPolling()
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+
     return () => {
       cancelled = true
-      clearInterval(id)
+      stopPolling()
+      document.removeEventListener('visibilitychange', handleVisibility)
     }
   }, [])
 

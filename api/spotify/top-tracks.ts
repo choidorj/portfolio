@@ -1,12 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { spotifyFetch, type SpotifyTrack } from '../_lib/spotify.js'
+import { spotifyFetch, parseLimit, parseTimeRange, type SpotifyTrack } from '../_lib/spotify.js'
 
 type TopTracksResponse = { items: SpotifyTrack[] }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const range = (req.query.range as string) ?? 'short_term' // short_term | medium_term | long_term
-    const limit = Math.min(Number(req.query.limit) || 10, 50)
+    const range = parseTimeRange(req.query.range)
+    const limit = parseLimit(req.query.limit, 10)
 
     const data = await spotifyFetch<TopTracksResponse>(
       `/me/top/tracks?time_range=${range}&limit=${limit}`,

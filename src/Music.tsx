@@ -10,6 +10,9 @@ function useFetch<T>(url: string): FetchState<T> {
 
   useEffect(() => {
     let cancelled = false
+    setData(null)
+    setError(null)
+    setLoading(true)
 
     const load = async () => {
       try {
@@ -50,7 +53,7 @@ function TopArtists() {
         <Placeholder message={error} />
       ) : loading ? (
         <div className="artist-list">
-          {Array.from({ length: 8 }).map((_, i) => (
+          {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="artist-row">
               <span className="track-number">{i + 1}</span>
               <div className="artist-img skeleton" />

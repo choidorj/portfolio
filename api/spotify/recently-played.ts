@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { spotifyFetch, type SpotifyTrack } from '../_lib/spotify.js'
+import { spotifyFetch, parseLimit, type SpotifyTrack } from '../_lib/spotify.js'
 
 type RecentlyPlayedResponse = {
   items: { track: SpotifyTrack; played_at: string }[]
@@ -7,7 +7,7 @@ type RecentlyPlayedResponse = {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const limit = Math.min(Number(req.query.limit) || 10, 50)
+    const limit = parseLimit(req.query.limit, 10)
 
     const data = await spotifyFetch<RecentlyPlayedResponse>(
       `/me/player/recently-played?limit=${limit}`,

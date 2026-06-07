@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Obsidian vault config kept alongside the markdown notes
+.obsidian/

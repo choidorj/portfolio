@@ -28,9 +28,11 @@ environment variables from your Vercel project. You can also create a local
 
 ## Spotify integration
 
-The `/spotify` page calls four serverless endpoints under `/api/spotify/*`. All
-of them use a single long-lived refresh token to talk to Spotify on your behalf.
-The refresh token never reaches the browser.
+The `/music` page and the homepage now-playing line call four serverless
+endpoints under `/api/spotify/*`. All of them use a single long-lived refresh
+token to talk to Spotify on your behalf, and the server caches the short-lived
+access token in memory between requests. The refresh token never reaches the
+browser.
 
 ### One-time setup
 
@@ -69,6 +71,7 @@ The refresh token never reaches the browser.
 | `GET /api/spotify/recently-played?limit=10` | Your last played tracks | 1m |
 
 Time ranges: `short_term` (~4 weeks), `medium_term` (~6 months), `long_term` (years).
+Unknown `range` values and out-of-range `limit` values fall back to the defaults above.
 
 ## Build
 
