@@ -30,10 +30,7 @@ function HomePage() {
         hi i'm choi. this site is for short writings, project notes, and things that are currently on my mind.
       </p>
       <p>
-        i like building things that feel good to use.
-      </p>
-      <p>
-        recently, i've been into computer vision, neural networks, databases, and the tiny details that make software feel good to use. i like customizing my tools, tweaking my setup, and writing little scripts to automate things i probably shouldn't spend time automating.
+        i like making software feel fast, simple, and personal. recently, i've been interested in computer vision, neural networks, databases, and the tiny details that make tools feel good to use. i also like customizing my setup and writing little scripts to automate things i probably shouldn't spend time automating.
       </p>
       <p>
         outside of school, i enjoy traveling, listening to{' '}
