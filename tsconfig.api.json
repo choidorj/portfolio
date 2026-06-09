@@ -14,7 +14,6 @@
     "moduleDetection": "force",
     "noEmit": true,
     "esModuleInterop": true,
-    "jsx": "react-jsx",
 
     /* Linting */
     "strict": true,
@@ -23,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["api/**/*.ts", "api/**/*.tsx"]
+  "include": ["api/**/*.ts"]
 }
