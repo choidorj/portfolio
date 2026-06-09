@@ -19,10 +19,12 @@ It's somewhat amazing to think I started gaming when I was only 8 years old and 
 - SCP: 5K
 - Enlisted
 - Hollow Knight
+- Minecraft
 
 And a list of games I plan on playing at some point:
 
 - Dark Souls III
+- Silksong
 - The Witcher
 - Baldur's Gate
 - Ghost of Tsushima

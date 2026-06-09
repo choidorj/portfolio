@@ -30,11 +30,17 @@ function HomePage() {
         hi i'm choi. this site is for short writings, project notes, and things that are currently on my mind.
       </p>
       <p>
-        i like building things that feel good to use. lately, i've been interested in customizing tools and writing little scripts to automate things I probably shouldn't.
+        i like building things that feel good to use.
+      </p>
+      <p>
+        recently, i've been into computer vision, neural networks, databases, and the tiny details that make software feel good to use. i like customizing my tools, tweaking my setup, and writing little scripts to automate things i probably shouldn't spend time automating.
       </p>
       <p>
         outside of school, i enjoy traveling, listening to{' '}
-        <TransitionLink to="/music">music</TransitionLink>, and playing video games. you can find me on{' '}
+        <TransitionLink to="/music">music</TransitionLink>, reading books, and playing video games. my favorite games include hollow knight, project zomboid, and nuclear nightmare. currently, i'm trying to finish dark souls III, but haven't found the time yet. 
+      </p>
+      <p>
+        feel free to reach out if you'd like to talk about anything. you can find me here:{' '}
         <a href="https://github.com/choidorj" target="_blank" rel="noopener noreferrer">
           github
         </a>
