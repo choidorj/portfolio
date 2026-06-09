@@ -16,8 +16,15 @@ export default defineConfig([
       reactRefresh.configs.vite,
     ],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 2023,
       globals: globals.browser,
+    },
+  },
+  {
+    // Vercel serverless functions run on Node, not in the browser.
+    files: ['api/**/*.ts'],
+    languageOptions: {
+      globals: globals.node,
     },
   },
 ])

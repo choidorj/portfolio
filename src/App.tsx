@@ -10,8 +10,12 @@ import NoteDetail from './NoteDetail'
 import NotFound from './NotFound'
 import NowPlaying from './NowPlaying'
 import TransitionLink from './TransitionLink'
+import { startViewTransition } from './view-transition'
 
 type Theme = 'light' | 'dark'
+
+// Keep in sync with --bg in index.css; drives the <meta name="theme-color">.
+const THEME_COLORS: Record<Theme, string> = { light: '#fbf1c7', dark: '#282828' }
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -145,21 +149,14 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem('theme', theme)
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', THEME_COLORS[theme])
   }, [theme])
 
   const toggleTheme: ToggleTheme = () => {
     const next: Theme = theme === 'light' ? 'dark' : 'light'
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const supportsViewTransition =
-      typeof document !== 'undefined' && 'startViewTransition' in document
-
-    if (!supportsViewTransition || reduceMotion) {
-      setTheme(next)
-      return
-    }
-
-    document.startViewTransition(() => {
+    startViewTransition(() => {
       flushSync(() => setTheme(next))
     })
   }

@@ -5,12 +5,6 @@ export type NowPlaying = {
   isPlaying: boolean
   title: string
   artist: string
-  album: string
-  albumImageUrl: string | null
-  songUrl: string
-  progressMs: number
-  durationMs: number
-  fetchedAt: number
 } | null
 
 export type Track = {

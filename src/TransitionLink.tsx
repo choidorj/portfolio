@@ -1,18 +1,7 @@
 import type { MouseEvent } from 'react'
 import { flushSync } from 'react-dom'
 import { Link, useNavigate, type LinkProps } from 'react-router-dom'
-
-function startViewTransition(callback: () => void) {
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const supports = typeof document !== 'undefined' && 'startViewTransition' in document
-
-  if (!supports || reduceMotion) {
-    callback()
-    return
-  }
-
-  document.startViewTransition(callback)
-}
+import { startViewTransition } from './view-transition'
 
 export default function TransitionLink({ to, onClick, ...rest }: LinkProps) {
   const navigate = useNavigate()
