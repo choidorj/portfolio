@@ -173,7 +173,7 @@ function TrackListSkeleton({ count }: { count: number }) {
 }
 
 function Placeholder({ message }: { message: string }) {
-  return <div className="spotify-placeholder">{message}</div>
+  return <div className="placeholder">{message}</div>
 }
 
 export default function Music() {

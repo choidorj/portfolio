@@ -4,31 +4,31 @@ date: 2026-05-25
 description: a running list of games I've played and games still parked in my wishlist
 ---
 
-It's somewhat amazing to think I started gaming when I was only 8 years old and played consistently all the way until college. Here's the list of games I've played:
+it's somewhat amazing to think i started gaming when i was only 8 years old and played consistently all the way until college. here's the list of games i've played:
 
-- Dota 2
-- Left 4 Dead 2
-- Counter-Strike: Global Offensive (now CS2)
-- Grand Theft Auto V
-- PUBG
-- Bloons TD 5
-- The Forest
-- Project Zomboid
-- Nuclear Nightmare
-- Escape the Backrooms
-- SCP: 5K
-- Enlisted
-- Hollow Knight
-- Minecraft
+- dota 2
+- left 4 dead 2
+- counter-strike: global offensive (now cs2)
+- grand theft auto v
+- pubg
+- bloons td 5
+- the forest
+- project zomboid
+- nuclear nightmare
+- escape the backrooms
+- scp: 5k
+- enlisted
+- hollow knight
+- minecraft
 
-And a list of games I plan on playing at some point:
+and a list of games i plan on playing at some point:
 
-- Dark Souls III
-- Silksong
-- The Witcher
-- Baldur's Gate
-- Ghost of Tsushima
-- Elden Ring
-- Expedition 33
+- dark souls iii
+- silksong
+- the witcher
+- baldur's gate
+- ghost of tsushima
+- elden ring
+- expedition 33
 
-Perhaps I'll actually find the time to play these, or they'll just sit in my Steam wishlist until the end of time.
+perhaps i'll actually find the time to play these, or they'll just sit in my steam wishlist until the end of time.

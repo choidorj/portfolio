@@ -8,14 +8,14 @@ export default function Notes() {
       <p className="page-subtitle">scratchpad / writing</p>
 
       {notes.length === 0 ? (
-        <div className="spotify-placeholder">nothing here yet. check back soon.</div>
+        <div className="placeholder">nothing here yet.</div>
       ) : (
         <ul className="notes-list">
           {notes.map((note) => (
             <li key={note.slug} className="notes-item">
               <TransitionLink to={`/notes/${note.slug}`} className="notes-link">
                 <span className="notes-title">{note.title}</span>
-                {note.date && <time className="notes-date">{note.date}</time>}
+                {note.date && <time className="notes-date" dateTime={note.date}>{note.displayDate}</time>}
                 {note.description && (
                   <span className="notes-desc">{note.description}</span>
                 )}

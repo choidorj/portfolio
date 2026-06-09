@@ -5,6 +5,7 @@ export type Note = {
   slug: string
   title: string
   date: string
+  displayDate: string
   description: string
   content: string
 }
@@ -31,14 +32,23 @@ function parseFrontmatter(src: string): { meta: Record<string, string>; body: st
   return { meta, body: match[2] }
 }
 
+function formatDate(iso: string): string {
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  if (!m) return iso
+  const [, year, month, day] = m
+  return `${month}-${day}-${year}`
+}
+
 export const notes: Note[] = Object.entries(rawModules)
   .map(([path, source]) => {
     const slug = path.split('/').pop()!.replace(/\.md$/, '')
     const { meta, body } = parseFrontmatter(source)
+    const date = meta.date ?? ''
     return {
       slug,
       title: meta.title ?? slug,
-      date: meta.date ?? '',
+      date,
+      displayDate: formatDate(date),
       description: meta.description ?? '',
       content: body.trimStart(),
     }

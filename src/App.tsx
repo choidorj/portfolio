@@ -34,7 +34,7 @@ function HomePage() {
       </p>
       <p>
         outside of school, i enjoy traveling, listening to{' '}
-        <TransitionLink to="/music">music</TransitionLink>, reading books, and playing video games. my favorite games include hollow knight, project zomboid, and nuclear nightmare. currently, i'm trying to finish dark souls III, but haven't found the time yet. 
+        <TransitionLink to="/music">music</TransitionLink>, reading books, and playing video games. my favorite games include hollow knight, project zomboid, and nuclear nightmare. currently, i'm trying to finish dark souls iii, but haven't found the time yet. 
       </p>
       <p>
         feel free to reach out if you'd like to talk about anything. you can find me here:{' '}

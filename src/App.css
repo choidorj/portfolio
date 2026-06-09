@@ -216,7 +216,7 @@ main {
 .skeleton-line--md { width: 55%; }
 .skeleton-line--lg { width: 75%; }
 
-.spotify-placeholder {
+.placeholder {
   padding: 16px;
   color: var(--fg-muted);
   font-size: 13px;

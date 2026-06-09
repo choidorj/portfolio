@@ -17,7 +17,7 @@ export default function NoteDetail() {
       </p>
 
       <h1 className="page-title">{note.title}</h1>
-      {note.date && <p className="note-meta"><time>{note.date}</time></p>}
+      {note.date && <p className="note-meta"><time dateTime={note.date}>{note.displayDate}</time></p>}
       {note.description && <p className="note-lead">{note.description}</p>}
 
       <div className="note-body">

@@ -4,6 +4,7 @@
 // Renders straight to React nodes (no dangerouslySetInnerHTML).
 
 import type { ReactNode } from 'react'
+import TransitionLink from './TransitionLink'
 
 type Block =
   | { type: 'heading'; level: 2 | 3; text: string }
@@ -107,7 +108,7 @@ function renderInline(text: string): ReactNode[] {
     }
 
     // *italic*
-    if (text[i] === '*') {
+    if (text[i] === '*' && text[i + 1] !== '*') {
       const end = text.indexOf('*', i + 1)
       if (end !== -1) {
         flush()
@@ -136,17 +137,25 @@ function renderInline(text: string): ReactNode[] {
         if (urlEnd !== -1) {
           const linkText = text.slice(i + 1, close)
           const url = text.slice(close + 2, urlEnd)
-          const isExternal = /^https?:\/\//.test(url)
           flush()
-          nodes.push(
-            <a
-              key={nodes.length}
-              href={url}
-              {...(isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
-            >
-              {linkText}
-            </a>,
-          )
+          if (url.startsWith('/')) {
+            nodes.push(
+              <TransitionLink key={nodes.length} to={url}>
+                {linkText}
+              </TransitionLink>,
+            )
+          } else {
+            const isExternal = /^https?:\/\//.test(url)
+            nodes.push(
+              <a
+                key={nodes.length}
+                href={url}
+                {...(isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
+              >
+                {linkText}
+              </a>,
+            )
+          }
           i = urlEnd + 1
           continue
         }
