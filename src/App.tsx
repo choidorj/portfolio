@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import './App.css'
+import Chess from './chess/Chess'
 import Music from './Music'
 import Notes from './Notes'
 import NoteDetail from './NoteDetail'
@@ -39,6 +40,10 @@ function HomePage() {
       <p>
         outside of school, i enjoy traveling, listening to{' '}
         <TransitionLink to="/music">music</TransitionLink>, reading books, and playing video games. my favorite games include hollow knight, project zomboid, and nuclear nightmare. currently, i'm trying to finish dark souls iii, but haven't found the time yet. 
+      </p>
+      <p>
+        i also wrote a <TransitionLink to="/chess">chess engine</TransitionLink> in c. it compiles
+        to webassembly and runs in your browser, so you can play it here.
       </p>
       <p>
         feel free to reach out if you'd like to talk about anything. you can find me here:{' '}
@@ -128,6 +133,7 @@ function Layout({ theme, toggleTheme }: { theme: Theme; toggleTheme: ToggleTheme
           <Route path="/notes" element={<Notes />} />
           <Route path="/notes/:slug" element={<NoteDetail />} />
           <Route path="/music" element={<Music />} />
+          <Route path="/chess" element={<Chess />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

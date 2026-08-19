@@ -26,3 +26,7 @@ dist-ssr
 
 # Obsidian vault config kept alongside the markdown notes
 .obsidian/
+
+# Engine build artifacts. The committed WebAssembly output lives in
+# public/engine/ so Vercel needs no C toolchain.
+engine/build/

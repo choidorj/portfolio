@@ -33,6 +33,11 @@
   --accent-link-hover: #8ec07c;
   --accent-red: #fb4934;
 
+  /* Chess board squares, kept mid-tone so both piece colours stay legible. */
+  --board-light: #7c6f64;
+  --board-dark: #504945;
+  --board-mark: rgba(250, 189, 47, 0.3);
+
   --font: 'Monaspace Neon', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   font: 15px/1.65 var(--font);
@@ -58,6 +63,10 @@
   --accent-link: #076678;
   --accent-link-hover: #427b58;
   --accent-red: #9d0006;
+
+  --board-light: #ebdbb2;
+  --board-dark: #a89984;
+  --board-mark: rgba(181, 118, 20, 0.3);
 }
 
 * {

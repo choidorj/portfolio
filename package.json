@@ -8,7 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "gen:og": "node scripts/generate-og.mjs"
+    "gen:og": "node scripts/generate-og.mjs",
+    "build:engine": "make -C engine wasm",
+    "test:engine": "make -C engine test && make -C engine stress && make -C engine wasmtest",
+    "calibrate": "engine/scripts/calibrate.sh"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
